@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Example of the Authorization Code flow with Spotify</title>
+    <title>Fucking around with Spotify API</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
         #login,
@@ -31,10 +31,14 @@
             <div id="oauth">
             </div>
             <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
-            <br>
+            <br><br>
             <button class="btn btn-default" id="pull-followed-artists">Pull Followed Artists</button>
-            <br>
+            <br><br>
             <button class="btn btn-default" id="pull-top-10-artists">Pull Top 10 Artists</button>
+            <br><br>
+            <button class="btn btn-default" id="pull-top-tracks">Pull Top Tracks</button>
+            <br><br>
+            <button class="btn btn-default" id="play-pause">Play/Pause</button>
             <div id="followed-artists" style="visibility:hidden;">
                 <h2>Followed Artists</h2>
                 <ul id="followed-artists-list">
@@ -44,6 +48,12 @@
             <div id="top-10-artists" style="visibility:hidden;">
                 <h2>Top 10 Artists</h2>
                 <ul id="top-10-artists-list">
+
+                </ul>
+            </div>
+            <div id="top-tracks" style="visibility:hidden;">
+                <h2>Top Tracks</h2>
+                <ul id="top-tracks-list">
 
                 </ul>
             </div>
@@ -193,6 +203,104 @@
                             response.items.forEach(artist => {
                                 document.getElementById('top-10-artists-list').innerHTML += `<li>${artist.name}</li>`
                             });
+                        }
+                    });
+                }, false);
+
+                let collatedResponses = [];
+
+                function getTopTracks(offset, tracks, yearString) {
+                    console.log(`offset=${offset}`);
+                    let url = `https://api.spotify.com/v1/me/top/tracks?limit=20&offset=${offset}&time_range=long_term`;
+                    console.log(url);
+                    if (offset < 500) {
+                        $.ajax({
+                            url: url,
+                            headers: {
+                                'Authorization': 'Bearer ' + access_token
+                            },
+                            success: function (response) {
+                                console.log(response);
+                                response.items.forEach(item => {
+                                    collatedResponses.push(item);
+                                    if (item.album.release_date.includes(yearString)) {
+                                        console.log(`pushing item ${item.name} - ${item.artists[0].name}`);
+                                        tracks.push(item);
+                                    }
+                                });
+
+                                getTopTracks(offset + 20, tracks, yearString);
+
+                            },
+                            error: function (error) {
+                                console.log(error)
+                            }
+                        });
+                    } else {
+                        console.log(collatedResponses);
+                        console.log(tracks);
+                        tracks.forEach(track => {
+                            document.getElementById('top-tracks-list').innerHTML += `<li>${track.name} - ${track.artists[0].name}</li>`
+                        });
+                    }
+                }
+
+                document.getElementById('pull-top-tracks').addEventListener('click', function () {
+                    document.getElementById('followed-artists').style = 'visibility: hidden;';
+                    document.getElementById('top-10-artists').style = 'visibility: hidden;';
+                    document.getElementById('top-tracks').style = '';
+
+                    getTopTracks(0, [], '2020');
+                }, false);
+
+                function pause() {
+                    $.ajax({
+                        url: 'https://api.spotify.com/v1/me/player/pause',
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        type: 'PUT',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                }
+
+                function play() {
+                    $.ajax({
+                        url: 'https://api.spotify.com/v1/me/player/play',
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        data: JSON.stringify({
+                            'position_ms': 0
+                        }),
+                        type: 'PUT',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                }
+
+                document.getElementById('play-pause').addEventListener('click', function () {
+                    $.ajax({
+                        url: 'https://api.spotify.com/v1/me/player',
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        success: function (response) {
+                            console.log(response);
+                            if (response.is_playing) {
+                                pause();
+                            } else {
+                                play();
+                            }
                         }
                     });
                 }, false);

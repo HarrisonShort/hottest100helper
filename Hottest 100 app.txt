@@ -1,0 +1,14 @@
+Hottest 100 app
+- Scrape triple j plays for the year (if possible, the shortlist for the Hottest 100)
+- Potentially scrape triplejplays twitter
+- Displays a list of triple j tracks from 2022 ordered in most played to least played
+- Spotify login
+	- Read user's playlists, saved tracks and top tracks
+	- Highlight tracks that appear on those lists
+	- Can create a playlist based on this info
+	- Also create playlist based on the overall list of plays
+- last.fm login 
+	- "Better with last.fm"
+	- Can actually read user data to see what songs have been played from the list
+- Countdown to expected voting open time
+	- Normally 8am second Monday/Tuesday of December

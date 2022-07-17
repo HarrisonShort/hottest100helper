@@ -42,6 +42,8 @@
             <br><br>
             <button class="btn btn-default" id="pull-saved-albums-2022">Pull Saved Albums 2022</button>
             <br><br>
+            <button class="btn btn-default" id="pull-playlists-2022">Pull Playlists 2022</button>
+            <br><br>
             <button class="btn btn-default" id="play-pause">Play/Pause</button>
             <div id="followed-artists" style="visibility:hidden;">
                 <h2>Followed Artists</h2>
@@ -360,6 +362,66 @@
                     albums = [];
 
                     getSavedAlbums(0, albums);
+
+                }, false);
+
+                function getPlaylists(offset, playlists) {
+                    $.ajax({
+                        url: `https://api.spotify.com/v1/me/playlists?limit=50&offset=${offset}`,
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        success: function (response) {
+                            console.log(response);
+
+                            response.items.forEach(item => {
+                                playlists.push(item);
+
+                                // if (item.album.release_date.includes('2022')) {
+                                //     console.log(`pushing item ${item.album.name} - ${item.album.artists[0].name}`);
+                                // }
+                            });
+
+                            if (response.items.length === 50) {
+                                getPlaylists(offset + 50, playlists)
+                            }
+                            else {
+                                console.log(playlists);
+
+                                playlists.forEach(playlist => {
+                                    getPlaylistTracks(playlist.id);
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                }
+
+                function getPlaylistTracks(playlistId) {
+                    $.ajax({
+                        url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50`,
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        success: function (response) {
+                            console.log(response);
+
+                            response.items.forEach(item => {
+                                console.log(`${item}`);
+                            });
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                }
+
+                document.getElementById('pull-playlists-2022').addEventListener('click', function () {
+                    playlists = [];
+
+                    getPlaylists(0, playlists);
 
                 }, false);
 

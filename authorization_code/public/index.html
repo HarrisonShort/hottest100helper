@@ -38,6 +38,10 @@
             <br><br>
             <button class="btn btn-default" id="pull-top-tracks">Pull Top Tracks</button>
             <br><br>
+            <button class="btn btn-default" id="pull-saved-tracks-2022">Pull Saved Tracks 2022</button>
+            <br><br>
+            <button class="btn btn-default" id="pull-saved-albums-2022">Pull Saved Albums 2022</button>
+            <br><br>
             <button class="btn btn-default" id="play-pause">Play/Pause</button>
             <div id="followed-artists" style="visibility:hidden;">
                 <h2>Followed Artists</h2>
@@ -54,6 +58,12 @@
             <div id="top-tracks" style="visibility:hidden;">
                 <h2>Top Tracks</h2>
                 <ul id="top-tracks-list">
+
+                </ul>
+            </div>
+            <div id="saved-tracks-2022" style="visibility:hidden;">
+                <h2>Saved Tracks</h2>
+                <ul id="saved-tracks-2022-list">
 
                 </ul>
             </div>
@@ -207,13 +217,9 @@
                     });
                 }, false);
 
-                let collatedResponses = [];
-
-                function getTopTracks(offset, tracks, yearString) {
-                    console.log(`offset=${offset}`);
-                    let url = `https://api.spotify.com/v1/me/top/tracks?limit=20&offset=${offset}&time_range=long_term`;
-                    console.log(url);
-                    if (offset < 500) {
+                function getTopTracks(tracks, yearString, timeRange) {
+                    return new Promise((resolve, reject) => {
+                        let url = `https://api.spotify.com/v1/me/top/tracks?limit=50&time_range=${timeRange}`;
                         $.ajax({
                             url: url,
                             headers: {
@@ -221,28 +227,21 @@
                             },
                             success: function (response) {
                                 console.log(response);
+
                                 response.items.forEach(item => {
-                                    collatedResponses.push(item);
                                     if (item.album.release_date.includes(yearString)) {
                                         console.log(`pushing item ${item.name} - ${item.artists[0].name}`);
                                         tracks.push(item);
                                     }
                                 });
 
-                                getTopTracks(offset + 20, tracks, yearString);
-
+                                resolve(`Successfully added ${timeRange} tracks that were released in ${yearString}`);
                             },
                             error: function (error) {
                                 console.log(error)
                             }
                         });
-                    } else {
-                        console.log(collatedResponses);
-                        console.log(tracks);
-                        tracks.forEach(track => {
-                            document.getElementById('top-tracks-list').innerHTML += `<li>${track.name} - ${track.artists[0].name}</li>`
-                        });
-                    }
+                    });
                 }
 
                 document.getElementById('pull-top-tracks').addEventListener('click', function () {
@@ -250,7 +249,118 @@
                     document.getElementById('top-10-artists').style = 'visibility: hidden;';
                     document.getElementById('top-tracks').style = '';
 
-                    getTopTracks(0, [], '2020');
+                    tracks = [];
+
+                    getTopTracks(tracks, '2022', 'short_term')
+                        .then(getTopTracks(tracks, '2022', 'medium_term')
+                            .then(getTopTracks(tracks, '2022', 'long_term')
+                                .then(resolve => {
+                                    console.log(resolve);
+                                    console.log(tracks);
+                                    tracks.forEach(track => {
+                                        document.getElementById('top-tracks-list').innerHTML += `<li>${track.name} - ${track.artists[0].name}</li>`
+                                    });
+                                })));
+                }, false);
+
+                function getSavedTracks(offset, tracks) {
+                    $.ajax({
+                        url: `https://api.spotify.com/v1/me/tracks?limit=50&offset=${offset}`,
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        success: function (response) {
+                            console.log(response);
+
+                            response.items.forEach(item => {
+                                if (item.track.album.release_date.includes('2022')) {
+                                    console.log(`pushing item ${item.track.name} - ${item.track.artists[0].name}`);
+                                    tracks.push(item);
+                                }
+                            });
+
+                            if (response.items.length === 50) {
+                                getSavedTracks(offset + 50, tracks)
+                            }
+                            else {
+                                console.log(tracks);
+                                tracks.forEach(track => {
+                                    document.getElementById('saved-tracks-2022-list').innerHTML += `<li>${track.track.name} - ${track.track.artists[0].name}</li>`
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                }
+
+                document.getElementById('pull-saved-tracks-2022').addEventListener('click', function () {
+                    document.getElementById('saved-tracks-2022').style = '';
+
+                    tracks = [];
+
+                    getSavedTracks(0, tracks);
+
+                }, false);
+
+                function getSavedAlbums(offset, albums) {
+                    $.ajax({
+                        url: `https://api.spotify.com/v1/me/albums?limit=50&offset=${offset}`,
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        success: function (response) {
+                            console.log(response);
+
+                            response.items.forEach(item => {
+                                if (item.album.release_date.includes('2022')) {
+                                    console.log(`pushing item ${item.album.name} - ${item.album.artists[0].name}`);
+                                    albums.push(item);
+                                }
+                            });
+
+                            if (response.items.length === 50) {
+                                getSavedAlbums(offset + 50, albums)
+                            }
+                            else {
+                                console.log(albums);
+
+                                albums.forEach(album => {
+                                    getAlbumTracks(album.album.id);
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                }
+
+                function getAlbumTracks(albumId) {
+                    $.ajax({
+                        url: `https://api.spotify.com/v1/albums/${albumId}/tracks?limit=50`,
+                        headers: {
+                            'Authorization': 'Bearer ' + access_token
+                        },
+                        success: function (response) {
+                            console.log(response);
+
+                            response.items.forEach(item => {
+                                console.log(`${item.name} - ${item.artists[0].name}`);
+                            });
+                        },
+                        error: function (error) {
+                            console.log(error)
+                        }
+                    });
+                }
+
+                document.getElementById('pull-saved-albums-2022').addEventListener('click', function () {
+                    albums = [];
+
+                    getSavedAlbums(0, albums);
+
                 }, false);
 
                 function pause() {

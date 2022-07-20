@@ -231,7 +231,7 @@
                 }, false);
 
                 function getTopTracks(tracks, timeRange) {
-                    console.log('getSavedTracks ' + timeRange);
+                    console.log('getTopTracks ' + timeRange);
                     return new Promise((resolve, reject) => {
                         let url = `https://api.spotify.com/v1/me/top/tracks?limit=50&time_range=${timeRange}`;
                         $.ajax({
@@ -248,6 +248,7 @@
                                     }
                                 });
 
+                                console.log('Finished getTopTracks');
                                 resolve('Finished getTopTracks');
                             },
                             error: function (error) {
@@ -277,7 +278,6 @@
                 // }, false);
 
                 function getSavedTracks(offset, tracks) {
-                    console.log('getSavedTracks');
                     return new Promise((resolve, reject) => {
                         $.ajax({
                             url: `https://api.spotify.com/v1/me/tracks?limit=50&offset=${offset}`,
@@ -295,6 +295,7 @@
                                     getSavedTracks(offset + 50, tracks)
                                 }
                                 else {
+                                    console.log('Finished getSavedTracks');
                                     resolve('Finished getSavedTracks');
                                 }
                             },
@@ -336,6 +337,7 @@
                                         getAlbumTracks(album.id, tracks);
                                     });
 
+                                    console.log('Finished getSavedAlbums');
                                     resolve('Finished getSavedAlbums');
                                 }
                             },
@@ -388,13 +390,6 @@
                                     getPlaylists(offset + 50, playlists, tracks)
                                 }
                                 else {
-                                    playlists.forEach(function (playlist, index) {
-                                        setTimeout(function () {
-                                            console.log(`setTimeout ${index} ${playlist.name}`);
-                                            getPlaylistTracks(playlist, tracks);
-                                        }, 250 * index);
-                                    });
-
                                     console.log('finished getPlaylists');
                                     resolve('finished getPlaylists');
                                 }
@@ -406,9 +401,14 @@
                     });
                 }
 
-                function getPlaylistTracks(playlist, tracks) {
+                function getPlaylistTracks(offset, playlist, tracks) {
+                    if (playlist.owner.id !== '12159446877') {
+                        console.log(`skipping ${playlist.name}`);
+                        return;
+                    }
+
                     $.ajax({
-                        url: `https://api.spotify.com/v1/playlists/${playlist.id}/tracks?limit=50`,
+                        url: `https://api.spotify.com/v1/playlists/${playlist.id}/tracks?limit=50&offset=${offset}`,
                         headers: {
                             'Authorization': 'Bearer ' + access_token
                         },
@@ -418,6 +418,10 @@
                                 if (releaseDate && releaseDate.includes('2022'))
                                     tracks.push(item);
                             });
+
+                            if (response.items.length === 50) {
+                                getPlaylistTracks(offset + 50, playlist, tracks)
+                            }
                         },
                         error: function (error) {
                             console.log(error)
@@ -494,30 +498,36 @@
                     Promise.all([getSavedTracks(0, savedTracks),
                     getSavedAlbums(0, savedAlbums, savedAlbumTracks),
                     getPlaylists(0, playlists, playlistTracks),
-                    getTopTracksSequentially(topTracks)])
+                    getTopTracks(topTracks, 'short_term'),
+                    getTopTracks(topTracks, 'medium_term'),
+                    getTopTracks(topTracks, 'long_term')])
                         .then(values => {
-                            console.log('finished');
-                            console.log(values);
+                            debugger;
+
+                            playlists.forEach(function (playlist, index) {
+                                setTimeout(function () {
+                                    console.log(`setTimeout ${index} ${playlist.name}`);
+                                    getPlaylistTracks(0, playlist, tracks);
+                                }, 250 * index);
+                            });
+
+
+                            topTracks.forEach(track => {
+                                if (!collatedTracks.includes(track)) {
+                                    collatedTracks.push(track);
+                                }
+                            });
+
+                            console.log('PROMISE ALL FINISHED');
+
+                            collatedTracks.forEach(track => {
+                                document.getElementById('collated-2022-tracks-list').innerHTML += `<li>${track.name} - ${track.artist[0].name}</li>`
+                            });
                         })
                         .catch(error => console.log(error));
                 });
 
-                function getTopTracksSequentially(tracks) {
-                    return new Promise((resolve, reject) => {
-                        getTopTracks(tracks, 'short_term')
-                            .then(resolve => {
-                                console.log(resolve);
-                                getTopTracks(tracks, 'medium_term')
-                                    .then(resolve => {
-                                        console.log(resolve);
-                                        getTopTracks(tracks, 'long_term')
-                                            .then(resolve => {
-                                                console.log(resolve);
-                                            });
-                                    })
-                            });
-                    });
-                }
+
             }
         })();
     </script>

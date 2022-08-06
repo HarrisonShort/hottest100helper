@@ -1,29 +1,33 @@
-import { React, Component } from "react";
+import { React, Component, useEffect, useState } from "react";
 import './App.css';
+import useAuth from "./useAuth";
 
-export default class UserDetailsComponent extends Component {
+const UserDetailsComponent = ({ code }) => {
+    const [userData, setUserData] = useState();
+    const spotifyApi = useAuth(code);
 
-    componentDidMount() {
-        fetch("http://localhost:3000/spotify-user-details")
-            .then((response) => response.json())
-            .then((data) => {
-                this.setState(data, () => console.log(this.state));
-            });
-    }
-
-    render() {
-        if (!this.state) {
-            return <div></div>
+    useEffect(() => {
+        if (!spotifyApi) {
+            return;
         }
-        return (
-            < div className="App" >
-                <header className="App-header">
-                    <p>
-                        Logged in as {this.state.display_name}
-                    </p>
-                    <img src={this.state.images[0].url}></img>
-                </header>
-            </div >
-        );
-    }
-}
+
+        spotifyApi.getMe()
+            .then((data) => {
+                setUserData(data.body)
+                console.log(data.body);
+            })
+    }, [spotifyApi]);
+
+    return (
+        <div className="App">
+            <header className="App-header">
+                <p>
+                    Logged in {userData ? `as ${userData.display_name}` : ""}
+                </p>
+                {userData ? <img src={userData.images[0].url}></img> : ""}
+            </header>
+        </div >
+    );
+};
+
+export default UserDetailsComponent;

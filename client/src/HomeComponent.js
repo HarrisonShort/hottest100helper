@@ -1,5 +1,6 @@
 import React from "react";
 import './App.css';
+import { loginUrl } from './spotifyConfig'
 
 function HomeComponent() {
     const [data, setData] = React.useState(null);
@@ -12,17 +13,17 @@ function HomeComponent() {
                 console.log(data.express);
             });
     }, []);
-
+    console.log(loginUrl)
     return (
         <div className="App">
             <header className="App-header">
                 <p>
                     Hottest 100 Helper
                 </p>
-            <button onClick={event => window.location.href = 'http://localhost:5000/spotify-login'}>Sign in with Spotify!</button>
+                <a href={loginUrl}>Sign in with Spotify!</a>
             </header>
         </div>
-        );
+    );
 }
 
 export default HomeComponent;

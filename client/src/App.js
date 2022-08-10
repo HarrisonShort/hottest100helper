@@ -8,7 +8,6 @@ import UserDetailsComponent from "./UserDetailsComponent";
 const code = new URLSearchParams(window.location.search).get('code');
 
 function App() {
-
     return (
         <div className="app">
             {code ? <UserDetailsComponent code={code} /> : <HomeComponent />}

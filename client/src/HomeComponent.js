@@ -1,6 +1,7 @@
 import React from "react";
 import './App.css';
 import { loginUrl } from './spotifyConfig'
+import { TripleJTable } from "./triplejtable/TripleJTable";
 
 function HomeComponent() {
     return (
@@ -10,6 +11,7 @@ function HomeComponent() {
                     Hottest 100 Helper
                 </p>
                 <a href={loginUrl}>Sign in with Spotify!</a>
+                <TripleJTable />
             </header>
         </div>
     );

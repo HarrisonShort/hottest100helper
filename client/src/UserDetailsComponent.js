@@ -1,4 +1,4 @@
-import { React, Component, useEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-node";
 import './App.css';
 import useAuth from "./useAuth";

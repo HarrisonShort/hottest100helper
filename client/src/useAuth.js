@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import SpotifyWebApi from 'spotify-web-api-node';
 
 export default function useAuth(code) {
     const [accessToken, setAccessToken] = useState();

@@ -1,9 +1,5 @@
 export const COLUMNS = [
     {
-        Header: 'Rank',
-        accessor: 'rank'
-    },
-    {
         Header: 'Song',
         accessor: 'song'
     },
@@ -26,5 +22,9 @@ export const COLUMNS = [
     {
         Header: 'YouTube',
         accessor: 'youtube'
+    },
+    {
+        Header: 'TripleJTopSong',
+        accessor: 'triple_j_top_song'
     }
 ]

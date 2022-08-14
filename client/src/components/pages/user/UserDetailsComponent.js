@@ -11,10 +11,6 @@ const UserDetailsComponent = ({ code }) => {
     const [userData, setUserData] = useState();
     const accessToken = useAuth(code);
 
-    const notLoggedInJSX = <p></p>
-    const loggedInJSX = (<div><p>Logged in {userData ? `as ${userData.display_name}` : ""}</p>, {userData ? <img src={userData.images[0].url} alt="user" ></img> : ""
-    }</div>);
-
     useEffect(() => {
         if (!accessToken) {
             return;
@@ -31,7 +27,10 @@ const UserDetailsComponent = ({ code }) => {
     return (
         <div className="App">
             <header className="App-header">
-
+                <p>
+                    Logged in {userData ? `as ${userData.display_name}` : ""}
+                </p>
+                {userData ? <img src={userData.images[0].url} alt="user"></img> : ""}
             </header>
         </div >
     );

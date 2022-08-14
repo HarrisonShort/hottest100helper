@@ -1,6 +1,11 @@
 import React, { Link } from 'react'
+import { loginUrl } from '../spotifyConfig'
 
-export default function Header() {
+export default function Header(props) {
+    const signInJsx = <a href={loginUrl}>Sign in with Spotify!</a>
+    const userNameJsx = <p>{props.username}</p>;
+    const imageJsx = <img src={props.image} alt="user"></img>
+
     return (
         <nav className="navbar">
             <div className="navbar-container">
@@ -15,6 +20,9 @@ export default function Header() {
                     About
                 </li>
             </ul>
+            {!props.username ? signInJsx : ""}
+            {props.username ? userNameJsx : ""}
+            {props.image ? imageJsx : ""}
         </nav>
     )
 };

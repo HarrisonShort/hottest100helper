@@ -7,22 +7,21 @@ export default function Header(props) {
     const imageJsx = <img src={props.image} alt="user"></img>
 
     return (
-        <nav className="navbar">
-            <div className="navbar-container">
-                {/* <Link to="/" className="navbar-logo">Hottest 100 Helper</Link> */}
+        <nav className="header">
+            <div className="header-container">
                 Hottest 100 Helper
-            </div>
-            <ul>
-                <li className="nav-item">
-                    {/* <Link to='/about' className="nav-links">
+                <ul>
+                    <li className="header-item">
+                        {/* <Link to='/about' className="nav-links">
                         About
                     </Link> */}
-                    About
-                </li>
-            </ul>
-            {!props.username ? signInJsx : ""}
-            {props.username ? userNameJsx : ""}
-            {props.image ? imageJsx : ""}
+                        About
+                    </li>
+                </ul>
+                {!props.username ? signInJsx : ""}
+                {props.username ? userNameJsx : ""}
+                {props.image ? imageJsx : ""}
+            </div>
         </nav>
     )
 };

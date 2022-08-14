@@ -1,11 +1,14 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { COLUMNS } from './spotifydatatablecolumns';
 import { useTable } from 'react-table';
 
 export default function SpotifyDataTable(props) {
-    console.log(props)
     const columns = useMemo(() => COLUMNS, []);
-    const data = useMemo(() => props.tracks, []);
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        setData(props.tracks);
+    }, [props])
 
     const {
         getTableProps,
@@ -18,36 +21,40 @@ export default function SpotifyDataTable(props) {
         data
     });
 
-    return (
-        <table {...getTableProps()}>
-            <thead>
+    const noDataJsx = <p>No Information Available</p>;
+    const headersJsx = (headerGroups.map(headerGroup => (
+        <tr {...headerGroup.getHeaderGroupProps()}>
+            {
+                headerGroup.headers.map(column => (
+                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                ))
+            }
+        </tr>
+    )));
+    const rowsJsx = (rows.map((row, i) => {
+        prepareRow(row);
+        return (
+            <tr {...row.getRowProps()}>
                 {
-                    headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {
-                                headerGroup.headers.map(column => (
-                                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                                ))
-                            }
-                        </tr>
-                    ))
+                    row.cells.map(cell => {
+                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                    })
                 }
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                    console.log(row);
-                    prepareRow(row);
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {
-                                row.cells.map(cell => {
-                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                                })
-                            }
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
+            </tr>
+        );
+    }))
+
+    return (
+        <div>
+            <table {...getTableProps()}>
+                <thead>
+                    {headersJsx}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                    {rowsJsx}
+                </tbody>
+            </table>
+            {data.length === 0 ? noDataJsx : ""}
+        </div>
     )
 }

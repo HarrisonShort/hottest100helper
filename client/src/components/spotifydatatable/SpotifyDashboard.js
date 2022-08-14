@@ -2,7 +2,9 @@ import { React, useEffect, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-node";
 import useAuth from "../../useAuth";
 import Header from '../Header';
+import SpotifyButtonGroup from "./SpotifyButtonGroup";
 import SpotifyDataTable from "./SpotifyDataTable.js";
+import * as spotifyUtils from "./spotifyUtils";
 
 const spotifyApi = new SpotifyWebApi({
     clientId: 'e46e02da24384042b7a9d4a7cab689df'
@@ -10,49 +12,58 @@ const spotifyApi = new SpotifyWebApi({
 
 export const SpotifyDashboard = ({ code }) => {
     const [userData, setUserData] = useState();
-    const [topTracks, setTopTracks] = useState();
+    const [currentTracks, setCurrentTracks] = useState([]);
     const accessToken = useAuth(code);
+    const sortTypes = ["Top Tracks", "Saved Tracks", "Saved Albums"];
 
     const getUserData = () => {
         spotifyApi.getMe()
             .then((data) => {
                 setUserData(data.body);
-            });
-    }
-
-    const getTopTracks = () => {
-        spotifyApi.getMyTopTracks()
-            .then((data) => {
-                setTopTracks(formatTopTracks(data.body.items))
             })
             .catch((err) => {
                 console.log(err);
             });
     }
 
-    const formatTopTracks = (tracks) => {
-        if (!tracks) {
-            return;
+    const getTopTracks = () => {
+        spotifyApi.getMyTopTracks({
+            limit: 50
+        })
+            .then((data) => {
+                setCurrentTracks(spotifyUtils.formatTracks(data.body.items))
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    const getSavedTracks = () => {
+        let savedTracksCollated = [];
+        spotifyApi.getMySavedTracks({
+            limit: 50
+        })
+            .then((data) => {
+                let tracks = [];
+                data.body.items.forEach(track => tracks.push(track.track));
+                setCurrentTracks(spotifyUtils.formatTracks(tracks))
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    const handleButtonPress = (buttonPressed) => {
+        switch (buttonPressed) {
+            case sortTypes[0]:
+                getTopTracks();
+                break;
+            case sortTypes[1]:
+                getSavedTracks();
+                break;
+            default:
+                break;
         }
-
-        let formattedTracks = [];
-        tracks.map(track => {
-            if (track.album.release_date.includes('2022')) {
-                formattedTracks.push({
-                    song: track.name,
-                    artist: track.artists[0].name,
-                    album: track.album.name,
-                    release_date: track.album.release_date,
-                    spotify: track.uri,
-                    youtube: 'todo',
-                    triple_j_top_song: 'false'
-                });
-            }
-        });
-
-        console.log(formattedTracks);
-
-        return formattedTracks;
     }
 
     useEffect(() => {
@@ -61,12 +72,11 @@ export const SpotifyDashboard = ({ code }) => {
         }
 
         spotifyApi.setAccessToken(accessToken);
-
         getUserData();
-        getTopTracks();
 
     }, [accessToken]);
 
+    // Show logging in message while we wait for user data to populate.
     if (!userData) {
         return <div>Logging in...</div>
     }
@@ -74,7 +84,8 @@ export const SpotifyDashboard = ({ code }) => {
     return (
         <div>
             <Header username={userData.display_name} image={userData.images[0].url} />
-            {topTracks ? <SpotifyDataTable tracks={topTracks} /> : <p>No Information Available </p>}
+            <SpotifyButtonGroup types={sortTypes} handleButtonPress={handleButtonPress} />
+            <SpotifyDataTable tracks={currentTracks} />
         </div>
     )
 }

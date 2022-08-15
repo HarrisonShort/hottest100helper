@@ -43,6 +43,7 @@ export default function useAuth(code) {
                 })
         }, (expiresIn - 60) * 1000); // Refresh the token in 59 minutes.
 
+        return () => clearInterval(interval);
     }, [refreshToken, expiresIn]);
 
     return accessToken;

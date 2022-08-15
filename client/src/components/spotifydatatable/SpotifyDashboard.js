@@ -74,6 +74,12 @@ export const SpotifyDashboard = ({ code }) => {
             });
     }
 
+    const getPlaylists = () => {
+        let savedTracksCollated = [];
+        spotifyApi.getUserPlaylists()
+            .then((data) => {
+                console.log(data.body);
+                setWarningText("No songs available. This probably means none of your saved tracks are from this year!")
             })
             .catch((err) => {
                 console.log(err);
@@ -90,6 +96,9 @@ export const SpotifyDashboard = ({ code }) => {
                 break;
             case sortTypes[2]:
                 getSavedAlbumTracks();
+                break;
+            case sortTypes[3]:
+                getPlaylists();
                 break;
             default:
                 console.log(`${buttonPressed} not yet implemented`);

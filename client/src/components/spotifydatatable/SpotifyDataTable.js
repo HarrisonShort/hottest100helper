@@ -21,7 +21,7 @@ export default function SpotifyDataTable(props) {
         data
     });
 
-    const noDataJsx = <p>No Information Available</p>;
+    const noDataJsx = <p>{props.warningText}</p>;
     const headersJsx = (headerGroups.map(headerGroup => (
         <tr {...headerGroup.getHeaderGroupProps()}>
             {

@@ -13,8 +13,9 @@ const spotifyApi = new SpotifyWebApi({
 export const SpotifyDashboard = ({ code }) => {
     const [userData, setUserData] = useState();
     const [currentTracks, setCurrentTracks] = useState([]);
+    const [warningText, setWarningText] = useState("Please select an option");
     const accessToken = useAuth(code);
-    const sortTypes = ["Top Tracks", "Saved Tracks", "Saved Albums"];
+    const sortTypes = ["Top Tracks", "Saved Tracks", "Saved Albums", "In Playlists"];
 
     const getUserData = () => {
         spotifyApi.getMe()
@@ -31,7 +32,8 @@ export const SpotifyDashboard = ({ code }) => {
             limit: 50
         })
             .then((data) => {
-                setCurrentTracks(spotifyUtils.formatTracks(data.body.items))
+                setCurrentTracks(spotifyUtils.formatTracks(data.body.items));
+                setWarningText("No songs available. This probably means none of your top tracks are from this year!")
             })
             .catch((err) => {
                 console.log(err);
@@ -46,7 +48,32 @@ export const SpotifyDashboard = ({ code }) => {
             .then((data) => {
                 let tracks = [];
                 data.body.items.forEach(track => tracks.push(track.track));
-                setCurrentTracks(spotifyUtils.formatTracks(tracks))
+                setCurrentTracks(spotifyUtils.formatTracks(tracks));
+                setWarningText("No songs available. This probably means none of your saved tracks are from this year!")
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    const getSavedAlbumTracks = () => {
+        spotifyApi.getMySavedAlbums({
+            limit: 50
+        })
+            .then((data) => {
+                console.log(data.body.items)
+                let albumTracks = [];
+                data.body.items.forEach(item => {
+                    item.album.tracks.items.forEach(track => albumTracks.push({ track: track, album: item.album }));
+                });
+                setCurrentTracks(spotifyUtils.formatAlbumTracks(albumTracks));
+                setWarningText("No songs available. This probably means none of your saved albums are from this year!")
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
             })
             .catch((err) => {
                 console.log(err);
@@ -61,7 +88,11 @@ export const SpotifyDashboard = ({ code }) => {
             case sortTypes[1]:
                 getSavedTracks();
                 break;
+            case sortTypes[2]:
+                getSavedAlbumTracks();
+                break;
             default:
+                console.log(`${buttonPressed} not yet implemented`);
                 break;
         }
     }
@@ -85,7 +116,7 @@ export const SpotifyDashboard = ({ code }) => {
         <div>
             <Header username={userData.display_name} image={userData.images[0].url} />
             <SpotifyButtonGroup types={sortTypes} handleButtonPress={handleButtonPress} />
-            <SpotifyDataTable tracks={currentTracks} />
+            <SpotifyDataTable tracks={currentTracks} warningText={warningText} />
         </div>
     )
 }

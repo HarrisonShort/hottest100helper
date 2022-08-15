@@ -25,6 +25,7 @@ app.post('/spotify-login', (req, res) => {
     spotifyApi
         .authorizationCodeGrant(code)
         .then((data) => {
+            console.log(data.body)
             res.json({
                 accessToken: data.body.access_token,
                 refreshToken: data.body.refresh_token,
@@ -36,6 +37,28 @@ app.post('/spotify-login', (req, res) => {
             res.sendStatus(400);
         });
 });
+
+app.post('/refresh', (req, res) => {
+    const refreshToken = req.body.refreshToken;
+    const spotifyApi = new SpotifyWebApi({
+        clientId: 'e46e02da24384042b7a9d4a7cab689df',
+        clientSecret: '3a45111efb444494b7b66f16a0259ddd',
+        redirectUri: 'http://localhost:3000/',
+        refreshToken: refreshToken
+    });
+
+    spotifyApi.refreshAccessToken()
+        .then((data) => {
+            res.json({
+                accessToken: data.body.accessToken,
+                expiresIn: data.body.expiresIn
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.sendStatus(400);
+        });
+})
 
 //app.get('/spotify-callback', (request, response) => spotify.loginCallback(request, response));
 

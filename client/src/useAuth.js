@@ -23,5 +23,27 @@ export default function useAuth(code) {
             });
     }, [code]);
 
+    useEffect(() => {
+        if (!refreshToken || !expiresIn) {
+            return;
+        }
+
+        const interval = setInterval(() => {
+            axios
+                .post("http://localhost:5000/refresh", {
+                    refreshToken
+                })
+                .then((res) => {
+                    setAccessToken(res.data.accessToken);
+                    setExpiresIn(res.data.expiresIn);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    window.localStorage = "/";
+                })
+        }, (expiresIn - 60) * 1000); // Refresh the token in 59 minutes.
+
+    }, [refreshToken, expiresIn]);
+
     return accessToken;
 }

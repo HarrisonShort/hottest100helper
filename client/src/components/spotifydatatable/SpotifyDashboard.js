@@ -74,16 +74,71 @@ export const SpotifyDashboard = ({ code }) => {
             });
     }
 
-    const getPlaylists = () => {
-        let savedTracksCollated = [];
-        spotifyApi.getUserPlaylists()
+    // const getPlaylists = () => {
+    //     spotifyApi.getUserPlaylists({
+    //         limit: 50,
+    //     })
+    //         .then((data) => {
+    //             console.log(data.body);
+    //             getPlaylistTracks(data.body.items);
+    //             setWarningText("No songs available. This probably means none of tracks in your playlists are from this year!")
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }
+
+    const getAllPlaylists = (previousPlaylists, offset) => {
+        let currentPlaylists = previousPlaylists;
+        spotifyApi.getUserPlaylists(userData.id, {
+            limit: 50,
+            offset: offset
+        })
             .then((data) => {
-                console.log(data.body);
-                setWarningText("No songs available. This probably means none of your saved tracks are from this year!")
+                //getPlaylistTracks(data.body.items);
+                //setWarningText("No songs available. This probably means none of tracks in your playlists are from this year!")
+
+                data.body.items.forEach((playlist) => {
+                    if (playlist.owner.id === userData.id && playlist.tracks.items.length > 0) {
+                        currentPlaylists.push(playlist);
+                    }
+                });
+
+                if (data.body.items.length < 50) {
+                    getAllPlaylistTracks(currentPlaylists);
+
+                    return currentPlaylists;
+                } else {
+                    getAllPlaylists(currentPlaylists, offset + 50)
+                }
             })
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    const getPlaylistTracks = (playlist, previousTracks, offset) => {
+        let currentTracks = previousTracks;
+        spotifyApi.getPlaylistTracks(playlist.id, { limit: 50, offset: offset })
+            .then((data) => {
+                console.log({ playlistName: playlist.name, playlist: playlist, track: data });
+                if (data.body.items.length < 50) {
+                    console.log('done with ' + playlist.name);
+                    console.log(currentTracks);
+                } else {
+                    getPlaylistTracks(playlist, currentTracks, offset + 50)
+                }
+            })
+    }
+
+    const getAllPlaylistTracks = (playlists) => {
+        let playlistTracks = [];
+        playlists.forEach((playlist) => {
+
+            getPlaylistTracks(playlist, playlistTracks, 0);
+
+
+        })
     }
 
     const handleButtonPress = (buttonPressed) => {
@@ -98,7 +153,7 @@ export const SpotifyDashboard = ({ code }) => {
                 getSavedAlbumTracks();
                 break;
             case sortTypes[3]:
-                getPlaylists();
+                let allPlaylists = getAllPlaylists([], 0);
                 break;
             default:
                 console.log(`${buttonPressed} not yet implemented`);

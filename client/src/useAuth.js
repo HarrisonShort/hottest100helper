@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import SpotifyWebApi from 'spotify-web-api-node';
 
 export default function useAuth(code) {
     const [accessToken, setAccessToken] = useState();
@@ -23,6 +22,29 @@ export default function useAuth(code) {
                 window.location = "/";
             });
     }, [code]);
+
+    useEffect(() => {
+        if (!refreshToken || !expiresIn) {
+            return;
+        }
+
+        const interval = setInterval(() => {
+            axios
+                .post("http://localhost:5000/refresh", {
+                    refreshToken
+                })
+                .then((res) => {
+                    setAccessToken(res.data.accessToken);
+                    setExpiresIn(res.data.expiresIn);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    window.localStorage = "/";
+                })
+        }, (expiresIn - 60) * 1000); // Refresh the token in 59 minutes.
+
+        return () => clearInterval(interval);
+    }, [refreshToken, expiresIn]);
 
     return accessToken;
 }

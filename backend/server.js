@@ -37,6 +37,28 @@ app.post('/spotify-login', (req, res) => {
         });
 });
 
+app.post('/refresh', (req, res) => {
+    const refreshToken = req.body.refreshToken;
+    const spotifyApi = new SpotifyWebApi({
+        clientId: 'e46e02da24384042b7a9d4a7cab689df',
+        clientSecret: '3a45111efb444494b7b66f16a0259ddd',
+        redirectUri: 'http://localhost:3000/',
+        refreshToken: refreshToken
+    });
+
+    spotifyApi.refreshAccessToken()
+        .then((data) => {
+            res.json({
+                accessToken: data.body.accessToken,
+                expiresIn: data.body.expiresIn
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.sendStatus(400);
+        });
+})
+
 //app.get('/spotify-callback', (request, response) => spotify.loginCallback(request, response));
 
 //app.get('/spotify-user-details', (request, response) => spotify.getUserDetails(request, response));

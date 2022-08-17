@@ -5,6 +5,7 @@ import Header from '../Header';
 import SpotifyButtonGroup from "./SpotifyButtonGroup";
 import SpotifyDataTable from "./SpotifyDataTable.js";
 import * as spotifyUtils from "./spotifyUtils";
+import Footer from "../footer/Footer";
 
 const spotifyApi = new SpotifyWebApi({
     clientId: 'e46e02da24384042b7a9d4a7cab689df'
@@ -181,6 +182,7 @@ export const SpotifyDashboard = ({ code }) => {
             <Header username={userData.display_name} image={userData.images[0].url} />
             <SpotifyButtonGroup types={sortTypes} handleButtonPress={handleButtonPress} />
             <SpotifyDataTable tracks={currentTracks} warningText={warningText} />
+            <Footer />
         </div>
     )
 }

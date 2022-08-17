@@ -4,7 +4,7 @@ export function formatTracks(pulledTracks) {
     }
     let formattedTracks = [];
     pulledTracks.forEach(track => {
-        if (track.album.release_date.includes('2022')) {
+        if (track.album.release_date && track.album.release_date.includes('2022')) {
             formattedTracks.push({
                 song: track.name,
                 artist: track.artists[0].name,

@@ -14,9 +14,32 @@ const spotifyApi = new SpotifyWebApi({
 export const SpotifyDashboard = ({ code }) => {
     const [userData, setUserData] = useState();
     const [currentTracks, setCurrentTracks] = useState([]);
+    const [playlists, setPlaylists] = useState();
     const [warningText, setWarningText] = useState("Please select an option");
     const accessToken = useAuth(code);
-    const sortTypes = ["Top Tracks", "Saved Tracks", "Saved Albums", "In Playlists"];
+    const sortTypes = ["Top Tracks", "Saved Tracks", "Saved Albums"];
+
+    useEffect(() => {
+        if (!accessToken) {
+            return;
+        }
+
+        spotifyApi.setAccessToken(accessToken);
+        getUserData();
+
+    }, [accessToken]);
+
+    useEffect(() => {
+        if (!accessToken || !userData) {
+            return;
+        }
+
+        getAllPlaylists([], 0);
+    }, [userData]);
+
+    useEffect(() => {
+        console.log(currentTracks);
+    }, [currentTracks]);
 
     const getUserData = () => {
         spotifyApi.getMe()
@@ -75,20 +98,6 @@ export const SpotifyDashboard = ({ code }) => {
             });
     }
 
-    // const getPlaylists = () => {
-    //     spotifyApi.getUserPlaylists({
-    //         limit: 50,
-    //     })
-    //         .then((data) => {
-    //             console.log(data.body);
-    //             getPlaylistTracks(data.body.items);
-    //             setWarningText("No songs available. This probably means none of tracks in your playlists are from this year!")
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }
-
     const getAllPlaylists = (previousPlaylists, offset) => {
         let currentPlaylists = previousPlaylists;
         spotifyApi.getUserPlaylists(userData.id, {
@@ -96,19 +105,14 @@ export const SpotifyDashboard = ({ code }) => {
             offset: offset
         })
             .then((data) => {
-                //getPlaylistTracks(data.body.items);
-                //setWarningText("No songs available. This probably means none of tracks in your playlists are from this year!")
-
                 data.body.items.forEach((playlist) => {
-                    if (playlist.owner.id === userData.id && playlist.tracks.items.length > 0) {
+                    if (playlist.owner.id === userData.id && playlist.tracks.total > 0) {
                         currentPlaylists.push(playlist);
                     }
                 });
 
                 if (data.body.items.length < 50) {
-                    getAllPlaylistTracks(currentPlaylists);
-
-                    return currentPlaylists;
+                    setPlaylists(currentPlaylists);
                 } else {
                     getAllPlaylists(currentPlaylists, offset + 50)
                 }
@@ -118,27 +122,10 @@ export const SpotifyDashboard = ({ code }) => {
             });
     }
 
-    const getPlaylistTracks = (playlist, previousTracks, offset) => {
-        let currentTracks = previousTracks;
-        spotifyApi.getPlaylistTracks(playlist.id, { limit: 50, offset: offset })
-            .then((data) => {
-                console.log({ playlistName: playlist.name, playlist: playlist, track: data });
-                if (data.body.items.length < 50) {
-                    console.log('done with ' + playlist.name);
-                    console.log(currentTracks);
-                } else {
-                    getPlaylistTracks(playlist, currentTracks, offset + 50)
-                }
-            })
-    }
-
     const getAllPlaylistTracks = (playlists) => {
         let playlistTracks = [];
         playlists.forEach((playlist) => {
-
             getPlaylistTracks(playlist, playlistTracks, 0);
-
-
         })
     }
 
@@ -153,34 +140,56 @@ export const SpotifyDashboard = ({ code }) => {
             case sortTypes[2]:
                 getSavedAlbumTracks();
                 break;
-            case sortTypes[3]:
-                let allPlaylists = getAllPlaylists([], 0);
-                break;
             default:
                 console.log(`${buttonPressed} not yet implemented`);
                 break;
         }
     }
 
-    useEffect(() => {
-        if (!accessToken) {
+    const handlePlaylistSelect = (selectedPlaylistId) => {
+        if (!selectedPlaylistId) {
             return;
         }
 
-        spotifyApi.setAccessToken(accessToken);
-        getUserData();
+        setCurrentTracks([]);
+        setWarningText("Loading tracks...");
 
-    }, [accessToken]);
+        let playlist = playlists.find((playlist) => playlist.id === selectedPlaylistId);
+
+        if (playlist) {
+            getPlaylistTracks(playlist, [], 0);
+        }
+    }
+
+    const getPlaylistTracks = (playlist, previousTracks, offset) => {
+        let playlistTracks = previousTracks;
+
+        spotifyApi.getPlaylistTracks(playlist.id, { limit: 50, offset: offset })
+            .then((data) => {
+                data.body.items.forEach((item) => {
+                    playlistTracks.push(item.track);
+                })
+
+                if (data.body.items.length < 50) {
+                    setCurrentTracks(spotifyUtils.formatTracks(playlistTracks));
+                    setWarningText("No songs available. This probably means none of the tracks in this playlist are from this year!")
+                } else {
+                    console.log(playlistTracks);
+                    getPlaylistTracks(playlist, playlistTracks, offset + 50)
+                }
+            })
+    }
 
     // Show logging in message while we wait for user data to populate.
-    if (!userData) {
+    // Also wait for playlists to populate.
+    if (!userData || !playlists) {
         return <div>Logging in...</div>
     }
 
     return (
         <div>
             <Header username={userData.display_name} image={userData.images[0].url} />
-            <SpotifyButtonGroup types={sortTypes} handleButtonPress={handleButtonPress} />
+            <SpotifyButtonGroup types={sortTypes} handleButtonPress={handleButtonPress} playlists={playlists} handlePlaylistSelect={handlePlaylistSelect} />
             <SpotifyDataTable tracks={currentTracks} warningText={warningText} />
             <Footer />
         </div>

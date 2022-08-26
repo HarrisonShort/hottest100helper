@@ -37,10 +37,6 @@ export const SpotifyDashboard = ({ code }) => {
         getAllPlaylists([], 0);
     }, [userData]);
 
-    useEffect(() => {
-        console.log(currentTracks);
-    }, [currentTracks]);
-
     const getUserData = () => {
         spotifyApi.getMe()
             .then((data) => {
@@ -174,7 +170,6 @@ export const SpotifyDashboard = ({ code }) => {
                     setCurrentTracks(spotifyUtils.formatTracks(playlistTracks));
                     setWarningText("No songs available. This probably means none of the tracks in this playlist are from this year!")
                 } else {
-                    console.log(playlistTracks);
                     getPlaylistTracks(playlist, playlistTracks, offset + 50)
                 }
             })

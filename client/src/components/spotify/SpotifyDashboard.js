@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-node";
 import useAuth from "../../useAuth";
-import Header from '../Header';
+import Header from '../header/Header';
 import SpotifyButtonGroup from "./SpotifyButtonGroup";
 import SpotifyDataTable from "./SpotifyDataTable.js";
 import * as spotifyUtils from "./spotifyUtils";

@@ -1,0 +1,23 @@
+.header { 
+    position: sticky;
+    background-color: rgb(50, 50, 50);
+}
+
+.header-container {
+    height: 80px;
+    display: flex;
+    font-size: 1.2rem;
+}
+
+.user-details {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    background-color: rgb(60, 222, 31);
+    padding: 5px;
+}
+
+.user-image {
+    display: flex;
+    height: 60px;
+}

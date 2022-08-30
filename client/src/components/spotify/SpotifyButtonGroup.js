@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import './SpotifyButtonGroup.css';
 
 export default function SpotifyButtonGroup(props) {
     const [playlists, setPlaylists] = useState(props.playlists);
@@ -12,7 +13,7 @@ export default function SpotifyButtonGroup(props) {
     }
 
     return (
-        <div>
+        <div className="button-group">
             {
                 props.types.map((type) => (
                     <button key={type} onClick={() => props.handleButtonPress(type)}>{type}</button>
@@ -26,6 +27,6 @@ export default function SpotifyButtonGroup(props) {
                     ))
                 }
             </select>
-        </div >
+        </div>
     )
 }

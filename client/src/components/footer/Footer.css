@@ -1,0 +1,14 @@
+.footer-container * {
+    border: 1px solid red;
+}
+
+.footer-container {
+    height: 75px;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(50, 50, 50);
+}
+
+.kofi-button img {
+    max-height: 100%;
+}

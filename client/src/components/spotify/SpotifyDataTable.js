@@ -11,6 +11,19 @@ export default function SpotifyDataTable(props) {
         setData(props.tracks);
     }, [props])
 
+    const tableHooks = (hooks) => {
+        hooks.visibleColumns.push((columns) => [
+            ...columns, {
+                id: "Add",
+                Header: "Add to Playlist",
+                Cell: ({ row }) => (
+                    <button onClick={() => alert("test")}>Add</button>
+                )
+            }
+        ])
+    }
+
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -20,7 +33,7 @@ export default function SpotifyDataTable(props) {
     } = useTable({
         columns,
         data
-    });
+    }, tableHooks);
 
     const noDataJsx = <p>{props.warningText}</p>;
     const headersJsx = (headerGroups.map(headerGroup => (

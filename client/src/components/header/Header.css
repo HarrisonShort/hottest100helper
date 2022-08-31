@@ -1,23 +1,42 @@
+.header * {
+    border: 1px solid red;
+}
+
 .header { 
     position: sticky;
     background-color: rgb(50, 50, 50);
 }
 
-.header-container {
-    height: 80px;
-    display: flex;
+.header-title {
     font-size: 1.2rem;
+    color: white;
+    margin-right: auto;
+    margin-left: 5%;
+}
+
+.nav-links {
+    color: white;
+}
+
+.header-container {
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .user-details {
-    height: 60px;
+    min-height: 60%;
     display: flex;
     justify-content: center;
+    align-items: center;
     background-color: rgb(60, 222, 31);
     padding: 5px;
+    margin-left: 10%;
+    margin-right: 5%;
 }
 
 .user-image {
-    display: flex;
     height: 60px;
+    margin-left: 5px;
 }

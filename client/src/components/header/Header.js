@@ -4,21 +4,20 @@ import './Header.css';
 
 export default function Header(props) {
     const signInJsx = <a href={loginUrl}>Sign in with Spotify!</a>
-    const userNameJsx = <p>{props.username}</p>;
+    const userNameJsx = <p className="user-name">{props.username}</p>;
     const imageJsx = <img src={props.image} alt="user" className="user-image"></img>
 
     return (
         <nav className="header">
             <div className="header-container">
-                Hottest 100 Helper
-                <ul>
-                    <li className="header-item">
-                        {/* <Link to='/about' className="nav-links">
+                <div className="header-title">
+                    <p>Hottest 100 Helper</p>
+                </div>
+                <div className="nav-links">
+                    <p className="header-item">
                         About
-                    </Link> */}
-                        About
-                    </li>
-                </ul>
+                    </p>
+                </div>
                 <div className="user-details">
                     {!props.username ? signInJsx : ""}
                     {props.username ? userNameJsx : ""}

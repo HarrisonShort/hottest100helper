@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { COLUMNS } from './spotifydatatablecolumns';
 import { useTable } from 'react-table';
+import './SpotifyDataTable.css';
 
 export default function SpotifyDataTable(props) {
     const columns = useMemo(() => COLUMNS, []);

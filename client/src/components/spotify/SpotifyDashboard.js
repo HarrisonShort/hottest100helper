@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-node";
 import useAuth from "../../useAuth";
-import Header from '../Header';
+import Header from '../header/Header';
 import SpotifyButtonGroup from "./SpotifyButtonGroup";
 import SpotifyDataTable from "./SpotifyDataTable.js";
 import * as spotifyUtils from "./spotifyUtils";
@@ -36,10 +36,6 @@ export const SpotifyDashboard = ({ code }) => {
 
         getAllPlaylists([], 0);
     }, [userData]);
-
-    useEffect(() => {
-        console.log(currentTracks);
-    }, [currentTracks]);
 
     const getUserData = () => {
         spotifyApi.getMe()
@@ -174,7 +170,6 @@ export const SpotifyDashboard = ({ code }) => {
                     setCurrentTracks(spotifyUtils.formatTracks(playlistTracks));
                     setWarningText("No songs available. This probably means none of the tracks in this playlist are from this year!")
                 } else {
-                    console.log(playlistTracks);
                     getPlaylistTracks(playlist, playlistTracks, offset + 50)
                 }
             })

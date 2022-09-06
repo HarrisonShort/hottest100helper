@@ -2,6 +2,20 @@ import * as spotifyUtils from "./spotifyUtils";
 
 let helperPlaylist = null;
 
+export const getUserData = (spotifyApi) => {
+    return new Promise(resolve => {
+        spotifyApi.getMe()
+            .then((data) => {
+                resolve(data.body);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    });
+}
+
+//#region Playlists
+
 export const getAllPlaylistsAsync = async (spotifyApi, userId) => {
     let offset = 0;
     let currentPlaylists = await getAllPlaylists(spotifyApi, userId, offset);
@@ -12,74 +26,151 @@ export const getAllPlaylistsAsync = async (spotifyApi, userId) => {
         currentPlaylists = currentPlaylists.concat(nextPlaylists);
     } while (currentPlaylists.length % 50 === 0)
 
-    return removeInvalidPlaylists(currentPlaylists);
+    return returnValidPlaylists(currentPlaylists, userId);
 }
 
-export function getAllPlaylists(spotifyApi, userId, offset) {
+function getAllPlaylists(spotifyApi, userId, offset) {
     return new Promise(resolve => {
-        let currentPlaylists = [];
         spotifyApi.getUserPlaylists(userId, {
             limit: 50,
             offset: offset
         })
             .then((data) => {
-                // data.body.items.forEach((playlist) => {
-                //     if (playlist.name === "Hottest 100 Helper Shortlist") {
-                //         helperPlaylist = playlist;
-                //     } else if (playlist.owner.id === userId && playlist.tracks.total > 0) {
-                //         currentPlaylists.push(playlist);
-                //     }
-                // });
+                resolve(data.body.items);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    });
+}
 
-                data.body.items.forEach((playlist) => {
-                    currentPlaylists.push(playlist);
+function returnValidPlaylists(playlists, userId) {
+    return playlists.filter(function (playlist) {
+        return (playlist.owner.id === userId && playlist.tracks.total > 0);
+    })
+}
+//#endregion
+
+//#region Playlist Tracks
+
+export const getAllPlaylistTracks = async (spotifyApi, playlistId) => {
+    let offset = 0;
+    let currentTracks = await getPlaylistTracks(spotifyApi, playlistId, offset);
+
+    do {
+        offset += 50;
+        let nextTracks = await getPlaylistTracks(spotifyApi, playlistId, offset);
+        currentTracks = currentTracks.concat(nextTracks);
+    } while (currentTracks.length % 50 === 0)
+
+    console.log(currentTracks)
+    return spotifyUtils.formatTracks(currentTracks);
+}
+
+function getPlaylistTracks(spotifyApi, playlistId, offset) {
+    return new Promise(resolve => {
+        spotifyApi.getPlaylistTracks(playlistId, { limit: 50, offset: offset })
+            .then((data) => {
+                let tracks = [];
+                data.body.items.forEach(track => tracks.push(track.track));
+                resolve(spotifyUtils.formatTracks(tracks));
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    });
+}
+
+//#endregion
+
+//#region Top Tracks
+
+export const getAllTopTracks = async (spotifyApi, timeRange) => {
+    let topTracks = await getTopTracks(spotifyApi, "short_term");
+    topTracks = topTracks.concat(await getTopTracks(spotifyApi, "medium_term"));
+    topTracks = topTracks.concat(await getTopTracks(spotifyApi, "long_term"));
+    console.log(topTracks)
+
+    return topTracks;
+}
+
+const getTopTracks = (spotifyApi, timeRange) => {
+    return new Promise(resolve => {
+        spotifyApi.getMyTopTracks({
+            limit: 50,
+            time_range: timeRange
+        })
+            .then((data) => {
+                resolve(spotifyUtils.formatTracks(data.body.items));
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    });
+}
+
+//#region Saved Tracks
+
+export const getAllSavedTracks = async (spotifyApi) => {
+    let offset = 0;
+    let currentTracks = await getSavedTracks(spotifyApi, offset);
+
+    do {
+        offset += 50;
+        let nextTracks = await getSavedTracks(spotifyApi, offset);
+        currentTracks = currentTracks.concat(nextTracks);
+    } while (currentTracks.length % 50 === 0)
+
+    return currentTracks;
+}
+
+const getSavedTracks = (spotifyApi, offset) => {
+    return new Promise(resolve => {
+        spotifyApi.getMySavedTracks({
+            limit: 50,
+            offset: offset
+        })
+            .then((data) => {
+                let tracks = [];
+                data.body.items.forEach(track => tracks.push(track.track));
+                resolve(spotifyUtils.formatTracks(tracks));
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    });
+}
+
+//#endregion
+
+export const getAllSavedAlbumTracks = async (spotifyApi) => {
+    let offset = 0;
+    let currentTracks = await getSavedAlbumTracks(spotifyApi, offset);
+
+    do {
+        offset += 50;
+        let nextTracks = await getSavedTracks(spotifyApi, offset);
+        currentTracks = currentTracks.concat(nextTracks);
+    } while (currentTracks.length % 50 === 0)
+
+    return currentTracks;
+}
+
+const getSavedAlbumTracks = (spotifyApi) => {
+    return new Promise(resolve => {
+        spotifyApi.getMySavedAlbums({
+            limit: 50
+        })
+            .then((data) => {
+                console.log(data.body.items)
+                let albumTracks = [];
+                data.body.items.forEach(item => {
+                    item.album.tracks.items.forEach(track => albumTracks.push({ track: track, album: item.album }));
                 });
-
-                console.log(currentPlaylists);
-
-                resolve(currentPlaylists);
-
-                // if (data.body.items.length < 50) {
-                //     //setPlaylists(currentPlaylists);
-                // } else {
-                //     getAllPlaylists(spotifyApi, userId, currentPlaylists, offset + 50)
-                // }
             })
             .catch((err) => {
                 console.log(err);
             });
     })
 
-}
-
-function removeInvalidPlaylists(playlists, userId) {
-    let validPlaylists = playlists.filter(function (playlist) {
-        console.log(playlist)
-        return (playlist.owner.id === userId && playlist.tracks.total > 0);
-    })
-}
-
-export const getAllPlaylistTracks = (playlists) => {
-    let playlistTracks = [];
-    playlists.forEach((playlist) => {
-        getPlaylistTracks(playlist, playlistTracks, 0);
-    })
-}
-
-export const getPlaylistTracks = (spotifyApi, playlist, previousTracks, offset) => {
-    let playlistTracks = previousTracks;
-
-    spotifyApi.getPlaylistTracks(playlist.id, { limit: 50, offset: offset })
-        .then((data) => {
-            data.body.items.forEach((item) => {
-                playlistTracks.push(item.track);
-            })
-
-            if (data.body.items.length < 50) {
-                //setCurrentTracks(spotifyUtils.formatTracks(playlistTracks));
-                //setWarningText("No songs available. This probably means none of the tracks in this playlist are from this year!")
-            } else {
-                getPlaylistTracks(playlist, playlistTracks, offset + 50)
-            }
-        })
 }

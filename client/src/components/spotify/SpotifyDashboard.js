@@ -21,104 +21,54 @@ export const SpotifyDashboard = ({ code }) => {
     const sortTypes = ["Top Tracks", "Saved Tracks", "Saved Albums"];
     let helperPlaylist = null;
 
+    const fetchUserData = async () => {
+        let fetchedUserData = await getFunctions.getUserData(spotifyApi);
+        setUserData(fetchedUserData);
+    }
+
     useEffect(() => {
         if (!accessToken) {
             return;
         }
 
         spotifyApi.setAccessToken(accessToken);
-        getUserData();
+        fetchUserData();
 
     }, [accessToken]);
+
+    const fetchPlaylists = async () => {
+        let fetchedPlaylists = await getFunctions.getAllPlaylistsAsync(spotifyApi, userData.id);
+        setPlaylists(fetchedPlaylists);
+    }
 
     useEffect(() => {
         if (!accessToken || !userData) {
             return;
         }
 
-        const fetchPlaylists = async () => {
-            let allPlaylists = await getFunctions.getAllPlaylistsAsync(spotifyApi, userData.id);
-            setPlaylists(allPlaylists);
-        }
-
         fetchPlaylists();
-
-        // let allPlaylists = getFunctions.getAllPlaylists(spotifyApi, userData.id, [], 0);
-        // console.log(allPlaylists);
-        // setPlaylists(allPlaylists);
     }, [userData]);
 
     useEffect(() => {
 
     }, [playlists]);
 
-    const getUserData = () => {
-        spotifyApi.getMe()
-            .then((data) => {
-                setUserData(data.body);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
+    const handleButtonPress = async (buttonPressed) => {
+        setCurrentTracks([]);
+        setWarningText("Loading tracks...");
 
-    const getTopTracks = () => {
-        spotifyApi.getMyTopTracks({
-            limit: 50
-        })
-            .then((data) => {
-                setCurrentTracks(spotifyUtils.formatTracks(data.body.items));
-                setWarningText("No songs available. This probably means none of your top tracks are from this year!")
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
-    const getSavedTracks = () => {
-        let savedTracksCollated = [];
-        spotifyApi.getMySavedTracks({
-            limit: 50
-        })
-            .then((data) => {
-                let tracks = [];
-                data.body.items.forEach(track => tracks.push(track.track));
-                setCurrentTracks(spotifyUtils.formatTracks(tracks));
-                setWarningText("No songs available. This probably means none of your saved tracks are from this year!")
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
-    const getSavedAlbumTracks = () => {
-        spotifyApi.getMySavedAlbums({
-            limit: 50
-        })
-            .then((data) => {
-                console.log(data.body.items)
-                let albumTracks = [];
-                data.body.items.forEach(item => {
-                    item.album.tracks.items.forEach(track => albumTracks.push({ track: track, album: item.album }));
-                });
-                setCurrentTracks(spotifyUtils.formatAlbumTracks(albumTracks));
-                setWarningText("No songs available. This probably means none of your saved albums are from this year!")
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
-    const handleButtonPress = (buttonPressed) => {
         switch (buttonPressed) {
             case sortTypes[0]:
-                getTopTracks();
+                setCurrentTracks(await getFunctions.getAllTopTracks(spotifyApi));
+                setWarningText("No songs available. This probably means none of your top tracks are from this year!");
                 break;
             case sortTypes[1]:
-                getSavedTracks();
+                setCurrentTracks(await getFunctions.getAllSavedTracks(spotifyApi));
+                setWarningText("No songs available. This probably means none of your saved tracks are from this year!");
                 break;
             case sortTypes[2]:
-                getSavedAlbumTracks();
+                setCurrentTracks(await getFunctions.getAllSavedAlbumTracks(spotifyApi));
+                setWarningText("No songs available. This probably means none of your saved albums are from this year!");
                 break;
             default:
                 console.log(`${buttonPressed} not yet implemented`);
@@ -126,7 +76,7 @@ export const SpotifyDashboard = ({ code }) => {
         }
     }
 
-    const handlePlaylistSelect = (selectedPlaylistId) => {
+    const handlePlaylistSelect = async (selectedPlaylistId) => {
         if (!selectedPlaylistId) {
             return;
         }
@@ -137,11 +87,11 @@ export const SpotifyDashboard = ({ code }) => {
         let playlist = playlists.find((playlist) => playlist.id === selectedPlaylistId);
 
         if (playlist) {
-            getFunctions.getPlaylistTracks(playlist, [], 0);
+            let tracks = await getFunctions.getAllPlaylistTracks(spotifyApi, selectedPlaylistId);
+            console.log(tracks)
+            setCurrentTracks(tracks);
         }
     }
-
-
 
     // Show logging in message while we wait for user data to populate.
     // Also wait for playlists to populate.

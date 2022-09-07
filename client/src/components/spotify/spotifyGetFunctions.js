@@ -182,7 +182,6 @@ const getSavedAlbums = (spotifyApi, offset) => {
 
 const getSavedAlbumTracks = (albums) => {
     let albumTracks = [];
-    console.log(albums)
 
     albums.forEach(album => {
         album.album.tracks.items.forEach(track => {

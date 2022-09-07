@@ -88,7 +88,6 @@ export const SpotifyDashboard = ({ code }) => {
 
         if (playlist) {
             let tracks = await getFunctions.getAllPlaylistTracks(spotifyApi, selectedPlaylistId);
-            console.log(tracks)
             setCurrentTracks(tracks);
         }
     }

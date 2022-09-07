@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { COLUMNS } from './spotifydatatablecolumns';
 import { useTable } from 'react-table';
+
 import './SpotifyDataTable.css';
-import * as spotifyUtils from './spotifyUtils'
 
 export default function SpotifyDataTable(props) {
     const columns = useMemo(() => COLUMNS, []);
@@ -10,20 +10,19 @@ export default function SpotifyDataTable(props) {
 
     useEffect(() => {
         setData(props.tracks);
-    }, [props])
+    }, [props]);
 
     const tableHooks = (hooks) => {
         hooks.visibleColumns.push((columns) => [
             ...columns, {
-                id: "Add",
-                Header: "Add to Playlist",
+                id: "shortlist",
+                Header: "Shortlist",
                 Cell: ({ row }) => (
-                    <button onClick={() => alert("test")}>Add</button>
+                    <button button onClick={() => props.handleShortlistButtonPress(row)}>{row.original.inShortlist ? "Remove" : "Add"}</button>
                 )
             }
         ])
     }
-
 
     const {
         getTableProps,

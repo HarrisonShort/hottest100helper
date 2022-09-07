@@ -64,7 +64,6 @@ export const getAllPlaylistTracks = async (spotifyApi, playlistId) => {
         currentTracks = currentTracks.concat(nextTracks);
     } while (currentTracks.length % 50 === 0)
 
-    console.log(currentTracks)
     return spotifyUtils.formatTracks(currentTracks);
 }
 
@@ -72,9 +71,7 @@ function getPlaylistTracks(spotifyApi, playlistId, offset) {
     return new Promise(resolve => {
         spotifyApi.getPlaylistTracks(playlistId, { limit: 50, offset: offset })
             .then((data) => {
-                let tracks = [];
-                data.body.items.forEach(track => tracks.push(track.track));
-                resolve(spotifyUtils.formatTracks(tracks));
+                resolve(data.body.items);
             })
             .catch((error) => {
                 console.log(error);
@@ -90,9 +87,8 @@ export const getAllTopTracks = async (spotifyApi, timeRange) => {
     let topTracks = await getTopTracks(spotifyApi, "short_term");
     topTracks = topTracks.concat(await getTopTracks(spotifyApi, "medium_term"));
     topTracks = topTracks.concat(await getTopTracks(spotifyApi, "long_term"));
-    console.log(topTracks)
 
-    return topTracks;
+    return spotifyUtils.formatTracks(topTracks);
 }
 
 const getTopTracks = (spotifyApi, timeRange) => {
@@ -102,7 +98,7 @@ const getTopTracks = (spotifyApi, timeRange) => {
             time_range: timeRange
         })
             .then((data) => {
-                resolve(spotifyUtils.formatTracks(data.body.items));
+                resolve(data.body.items);
             })
             .catch((err) => {
                 console.log(err);
@@ -123,7 +119,7 @@ export const getAllSavedTracks = async (spotifyApi) => {
         currentTracks = currentTracks.concat(nextTracks);
     } while (currentTracks.length % 50 === 0)
 
-    return currentTracks;
+    return spotifyUtils.formatTracks(currentTracks);
 }
 
 const getSavedTracks = (spotifyApi, offset) => {
@@ -133,9 +129,7 @@ const getSavedTracks = (spotifyApi, offset) => {
             offset: offset
         })
             .then((data) => {
-                let tracks = [];
-                data.body.items.forEach(track => tracks.push(track.track));
-                resolve(spotifyUtils.formatTracks(tracks));
+                resolve(data.body.items);
             })
             .catch((err) => {
                 console.log(err);
@@ -178,7 +172,6 @@ const getSavedAlbums = (spotifyApi, offset) => {
             offset: offset
         })
             .then((data) => {
-                console.log(data.body.items)
                 resolve(data.body.items);
             })
             .catch((error) => {

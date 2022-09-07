@@ -2,18 +2,15 @@ export function formatTracks(pulledTracks) {
     if (!pulledTracks) {
         return;
     }
+
     let formattedTracks = [];
-    pulledTracks.forEach(track => {
-        if (track.album.release_date && track.album.release_date.includes('2022')) {
-            formattedTracks.push({
-                song: track.name,
-                artist: track.artists[0].name,
-                album: track.album.name,
-                release_date: track.album.release_date,
-                spotify: track.uri,
-                youtube: 'todo',
-                triple_j_top_song: 'false'
-            });
+    pulledTracks.forEach(trackData => {
+        let track = trackData.track ? trackData.track : trackData;
+        let album = track.album ? track.album : track.track.album;
+
+        let formattedTrack = returnFormattedTrack(track, album);
+        if (formattedTrack) {
+            formattedTracks.push(formattedTrack);
         }
     });
 
@@ -22,51 +19,50 @@ export function formatTracks(pulledTracks) {
 
 export function formatAlbumTracks(pulledTracks) {
     if (!pulledTracks) {
-        console.log('no pulled tracks!');
         return;
     }
 
     let formattedTracks = [];
-    console.log(pulledTracks)
-    console.log(pulledTracks[0].track)
-    console.log(pulledTracks[0].album)
-    pulledTracks.forEach(track => {
-        if (track.album.release_date.includes('2022')) {
-            formattedTracks.push({
-                song: track.track.name,
-                artist: track.track.artists[0].name,
-                album: track.album.name,
-                release_date: track.album.release_date,
-                spotify: track.track.uri,
-                youtube: 'todo',
-                triple_j_top_song: 'false'
-            });
+    pulledTracks.forEach((trackData, index) => {
+        let track = trackData.track;
+        let album = pulledTracks[index].album;
+
+        let formattedTrack = returnFormattedTrack(track, album);
+        if (formattedTrack) {
+            formattedTracks.push(formattedTrack);
         }
     });
 
     return formattedTracks;
 }
 
-export function getTopTracks(spotifyApi) {
-    spotifyApi.getMyTopTracks({
-        limit: 50
-    })
-        .then((data) => {
-            console.log(data.body.items);
-            return formatTracks(data.body.items);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+function returnFormattedTrack(track, album) {
+    if (album.release_date && album.release_date.includes('2022')) {
+        return {
+            song: track.name,
+            artist: track.artists[0].name,
+            album: album.name,
+            release_date: album.release_date,
+            spotify: track.uri,
+            youtube: 'todo',
+            triple_j_top_song: 'false'
+        }
+    } else {
+        return;
+    }
 }
 
 // Get all user playlists when logging in - DONE
-// Get the Hottest 100 Helper playlist if it exists
+// Get the Hottest 100 Helper playlist if it exists - DONE
 // Implement adding to playlist
 // If playlist doesn't exist, create playlist
 // Implement removing from the playlist 
 
 export function addTrackToPlaylist(spotifyApi, playlist, track) {
+    if (!playlist) {
+        playlist = createHelperPlaylist(spotifyApi);
+    }
+
     spotifyApi.addTracksToPlaylist('5ieJqeLJjjI8iJWaxeBLuK', [track])
         .then(function (data) {
             console.log('Added tracks to playlist!');
@@ -75,11 +71,9 @@ export function addTrackToPlaylist(spotifyApi, playlist, track) {
         });
 }
 
-export function removeTrackFromPlaylist(spotifyApi) {
-    var tracks = [{ uri: "spotify:track:4iV5W9uYEdYUVa79Axb7Rh" }];
-    var playlistId = '5ieJqeLJjjI8iJWaxeBLuK';
-    var options = { snapshot_id: "0wD+DKCUxiSR/WY8lF3fiCTb7Z8X4ifTUtqn8rO82O4Mvi5wsX8BsLj7IbIpLVM9" };
-    spotifyApi.removeTracksFromPlaylist(playlistId, tracks, options)
+export function removeTrackFromPlaylist(spotifyApi, playlist, track) {
+    var tracks = [{ uri: track }];
+    spotifyApi.removeTracksFromPlaylist(playlist.id, tracks)
         .then(function (data) {
             console.log('Tracks removed from playlist!');
         }, function (err) {
@@ -88,9 +82,10 @@ export function removeTrackFromPlaylist(spotifyApi) {
 }
 
 export function createHelperPlaylist(spotifyApi) {
-    spotifyApi.createPlaylist('My playlist', { 'description': 'My description', 'public': true })
+    spotifyApi.createPlaylist('My playlist', { 'description': 'Your Hottest 100 shortlist created at <url>', 'public': true })
         .then(function (data) {
             console.log('Created playlist!');
+            return data
         }, function (err) {
             console.log('Something went wrong!', err);
         });

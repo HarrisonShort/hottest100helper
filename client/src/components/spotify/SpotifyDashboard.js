@@ -111,6 +111,16 @@ export const SpotifyDashboard = ({ code }) => {
 
         if (playlist) {
             let tracks = await getFunctions.getAllPlaylistTracks(spotifyApi, selectedPlaylistId);
+
+            tracks.forEach((track) => {
+                for (var index = 0; index < helperShortlist.tracks.length; index++) {
+                    track.inShortlist = track.spotify === helperShortlist.tracks[index].spotify;
+                    if (track.inShortlist) {
+                        break;
+                    }
+                }
+            });
+
             setCurrentTracks(tracks);
         }
     }

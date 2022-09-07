@@ -49,6 +49,7 @@ function returnValidPlaylists(playlists, userId) {
         return (playlist.owner.id === userId && playlist.tracks.total > 0);
     })
 }
+
 //#endregion
 
 //#region Playlist Tracks
@@ -108,6 +109,7 @@ const getTopTracks = (spotifyApi, timeRange) => {
             });
     });
 }
+//#endregion
 
 //#region Saved Tracks
 
@@ -143,34 +145,59 @@ const getSavedTracks = (spotifyApi, offset) => {
 
 //#endregion
 
+//#region Saved Album Tracks
+
+// TODO: Find out why the getSavedAlbums code here cannot be split into another function without wrapping it in a Promise.
 export const getAllSavedAlbumTracks = async (spotifyApi) => {
     let offset = 0;
-    let currentTracks = await getSavedAlbumTracks(spotifyApi, offset);
+    let currentAlbums = await getSavedAlbums(spotifyApi, offset);
 
     do {
         offset += 50;
-        let nextTracks = await getSavedTracks(spotifyApi, offset);
-        currentTracks = currentTracks.concat(nextTracks);
-    } while (currentTracks.length % 50 === 0)
+        let nextAlbums = await getSavedAlbums(spotifyApi, offset);
+        currentAlbums = currentAlbums.concat(nextAlbums);
+    } while (currentAlbums.length % 50 === 0)
 
-    return currentTracks;
+    currentAlbums = returnValidAlbums(currentAlbums);
+
+    return getSavedAlbumTracks(currentAlbums);
 }
 
-const getSavedAlbumTracks = (spotifyApi) => {
+function returnValidAlbums(currentAlbums) {
+    return currentAlbums.filter(function (albumData) {
+        return (albumData.added_at.includes('2022') &&
+            albumData.album.release_date &&
+            albumData.album.release_date.includes('2022'));
+    });
+}
+
+const getSavedAlbums = (spotifyApi, offset) => {
     return new Promise(resolve => {
         spotifyApi.getMySavedAlbums({
-            limit: 50
+            limit: 50,
+            offset: offset
         })
             .then((data) => {
                 console.log(data.body.items)
-                let albumTracks = [];
-                data.body.items.forEach(item => {
-                    item.album.tracks.items.forEach(track => albumTracks.push({ track: track, album: item.album }));
-                });
+                resolve(data.body.items);
             })
-            .catch((err) => {
-                console.log(err);
-            });
+            .catch((error) => {
+                console.log(error);
+            })
     })
-
 }
+
+const getSavedAlbumTracks = (albums) => {
+    let albumTracks = [];
+    console.log(albums)
+
+    albums.forEach(album => {
+        album.album.tracks.items.forEach(track => {
+            albumTracks.push({ track: track, album: album.album })
+        });
+    });
+
+    return spotifyUtils.formatAlbumTracks(albumTracks);
+}
+
+//#endregion

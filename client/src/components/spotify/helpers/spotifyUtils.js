@@ -54,39 +54,6 @@ function returnFormattedTrack(track, album) {
 
 // Get all user playlists when logging in - DONE
 // Get the Hottest 100 Helper playlist if it exists - DONE
-// Implement adding to playlist
-// If playlist doesn't exist, create playlist
+// Implement adding to playlist - DONE
+// If playlist doesn't exist, create playlist - DONE
 // Implement removing from the playlist 
-
-export function addTrackToPlaylist(spotifyApi, playlist, track) {
-    if (!playlist) {
-        playlist = createHelperPlaylist(spotifyApi);
-    }
-
-    spotifyApi.addTracksToPlaylist('5ieJqeLJjjI8iJWaxeBLuK', [track])
-        .then(function (data) {
-            console.log('Added tracks to playlist!');
-        }, function (err) {
-            console.log('Something went wrong!', err);
-        });
-}
-
-export function removeTrackFromPlaylist(spotifyApi, playlist, track) {
-    var tracks = [{ uri: track }];
-    spotifyApi.removeTracksFromPlaylist(playlist.id, tracks)
-        .then(function (data) {
-            console.log('Tracks removed from playlist!');
-        }, function (err) {
-            console.log('Something went wrong!', err);
-        });
-}
-
-export function createHelperPlaylist(spotifyApi) {
-    spotifyApi.createPlaylist('My playlist', { 'description': 'Your Hottest 100 shortlist created at <url>', 'public': true })
-        .then(function (data) {
-            console.log('Created playlist!');
-            return data
-        }, function (err) {
-            console.log('Something went wrong!', err);
-        });
-}

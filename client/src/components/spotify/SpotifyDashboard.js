@@ -127,8 +127,16 @@ export const SpotifyDashboard = ({ code }) => {
 
     const handleShortlistButtonPress = async (row) => {
         if (!helperShortlist) {
+            console.log("helper shortlist not found, creating...");
             helperShortlist = await playlistFunctions.createHelperPlaylist(spotifyApi);
         }
+
+        // update with whether the track in currentTracks has has been added or removed
+        // either update the track in helperShortlist the same way
+        // or pull the helperShortlist again and update
+        console.log(currentTracks);
+        let changedTrack = currentTracks.find((track) => track.spotify == row.original.spotify);
+        changedTrack.inShortlist = !changedTrack.inShortlist
 
         if (row.original.inShortlist) {
             await playlistFunctions.removeTrackFromPlaylist(spotifyApi, helperShortlist.playlist, row.original.spotify)
@@ -136,6 +144,8 @@ export const SpotifyDashboard = ({ code }) => {
             await playlistFunctions.addTrackToPlaylist(spotifyApi, helperShortlist.playlist, row.original.spotify);
         }
 
+
+        setCurrentTracks(currentTracks);
     }
 
     // Show logging in message while we wait for user data to populate.

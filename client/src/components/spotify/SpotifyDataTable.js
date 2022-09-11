@@ -18,7 +18,7 @@ export default function SpotifyDataTable(props) {
                 id: "shortlist",
                 Header: "Shortlist",
                 Cell: ({ row }) => (
-                    <button button onClick={() => props.handleShortlistButtonPress(row)}>{row.original.inShortlist ? "Remove" : "Add"}</button>
+                    <button onClick={() => props.handleShortlistButtonPress(row)}>{row.original.inShortlist ? "Remove" : "Add"}</button>
                 )
             }
         ])

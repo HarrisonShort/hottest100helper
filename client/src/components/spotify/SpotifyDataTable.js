@@ -10,7 +10,14 @@ export default function SpotifyDataTable(props) {
 
     useEffect(() => {
         setData(props.tracks);
+        console.log('data set to props.tracks')
+        console.log(props.tracks)
     }, [props]);
+
+    const onShortlistButtonPressed = (row) => {
+        row.original.inShortlist = !row.original.inShortlist;
+        props.handleShortlistButtonPress(row);
+    }
 
     const tableHooks = (hooks) => {
         hooks.visibleColumns.push((columns) => [
@@ -18,7 +25,7 @@ export default function SpotifyDataTable(props) {
                 id: "shortlist",
                 Header: "Shortlist",
                 Cell: ({ row }) => (
-                    <button onClick={() => props.handleShortlistButtonPress(row)}>{row.original.inShortlist ? "Remove" : "Add"}</button>
+                    <button onClick={() => onShortlistButtonPressed(row)}>{row.original.inShortlist ? "Remove" : "Add"}</button>
                 )
             }
         ])

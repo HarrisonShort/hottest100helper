@@ -45,7 +45,8 @@ function returnFormattedTrack(track, album) {
             release_date: album.release_date,
             spotify: track.uri,
             youtube: 'todo',
-            triple_j_top_song: 'false'
+            triple_j_top_song: 'false',
+            inShortlist: false
         }
     } else {
         return;

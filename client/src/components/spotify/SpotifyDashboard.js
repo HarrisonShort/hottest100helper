@@ -7,7 +7,7 @@ import SpotifyButtonGroup from "./SpotifyButtonGroup";
 import SpotifyDataTable from "./SpotifyDataTable.js";
 import Footer from "../footer/Footer";
 
-import * as spotifyUtils from "./spotifyUtils";
+import * as spotifyUtils from "./helpers/spotifyUtils";
 import * as getFunctions from './helpers/spotifyGetFunctions';
 import * as playlistFunctions from './helpers/spotifyPlaylistFunctions';
 
@@ -39,12 +39,7 @@ export const SpotifyDashboard = ({ code }) => {
 
     }, [accessToken]);
 
-    const fetchPlaylists = async () => {
-        let fetchedPlaylists = await getFunctions.getAllPlaylistsAsync(spotifyApi, userData.id);
-        fetchedPlaylists = await separateHelperPlaylist(fetchedPlaylists);
-
-        setPlaylists(fetchedPlaylists);
-    }
+    
 
     const separateHelperPlaylist = async (fetchedPlaylists) => {
         let shortlist = fetchedPlaylists.find((playlist) => playlist.name === "Hottest 100 Helper Shortlist");
@@ -65,8 +60,15 @@ export const SpotifyDashboard = ({ code }) => {
     }
 
     useEffect(() => {
-        if (!accessToken || !userData) {
+        if (!userData) {
             return;
+        }
+
+        const fetchPlaylists = async () => {
+            let fetchedPlaylists = await getFunctions.getAllPlaylistsAsync(spotifyApi, userData.id);
+            fetchedPlaylists = await separateHelperPlaylist(fetchedPlaylists);
+    
+            setPlaylists(fetchedPlaylists);
         }
 
         fetchPlaylists();
@@ -75,6 +77,10 @@ export const SpotifyDashboard = ({ code }) => {
     useEffect(() => {
 
     }, [playlists]);
+
+    useEffect(() => {
+
+    }, [currentTracks]);
 
     const handleButtonPress = async (buttonPressed) => {
         setCurrentTracks([]);
@@ -128,15 +134,18 @@ export const SpotifyDashboard = ({ code }) => {
     const handleShortlistButtonPress = async (row) => {
         if (!helperShortlist) {
             console.log("helper shortlist not found, creating...");
-            helperShortlist = await playlistFunctions.createHelperPlaylist(spotifyApi);
+            setHelperShortlist(await playlistFunctions.createHelperPlaylist(spotifyApi));
+        } else {
+            console.log(helperShortlist);
+            console.log(currentTracks);
         }
 
         // update with whether the track in currentTracks has has been added or removed
         // either update the track in helperShortlist the same way
         // or pull the helperShortlist again and update
-        console.log(currentTracks);
-        let changedTrack = currentTracks.find((track) => track.spotify == row.original.spotify);
-        changedTrack.inShortlist = !changedTrack.inShortlist
+        //let changedTrack = currentTracks.find((track) => track.spotify === row.original.spotify);
+        //console.log(changedTrack);
+        //changedTrack.inShortlist = !changedTrack.inShortlist
 
         if (row.original.inShortlist) {
             await playlistFunctions.removeTrackFromPlaylist(spotifyApi, helperShortlist.playlist, row.original.spotify)
@@ -145,7 +154,7 @@ export const SpotifyDashboard = ({ code }) => {
         }
 
 
-        setCurrentTracks(currentTracks);
+        //setCurrentTracks(currentTracks);
     }
 
     // Show logging in message while we wait for user data to populate.

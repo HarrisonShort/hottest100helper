@@ -1,6 +1,6 @@
 export function formatTracks(pulledTracks) {
-    if (!pulledTracks) {
-        return;
+    if (!pulledTracks || pulledTracks.length === 0) {
+        return pulledTracks;
     }
 
     let formattedTracks = [];

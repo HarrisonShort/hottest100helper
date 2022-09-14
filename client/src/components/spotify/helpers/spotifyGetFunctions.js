@@ -24,7 +24,7 @@ export const getAllPlaylistsAsync = async (spotifyApi, userId) => {
         offset += 50;
         let nextPlaylists = await getAllPlaylists(spotifyApi, userId, offset);
         currentPlaylists = currentPlaylists.concat(nextPlaylists);
-    } while (currentPlaylists.length % 50 === 0)
+    } while (currentPlaylists.length % 50 === 0 && currentPlaylists.length > 0)
 
     return returnValidPlaylists(currentPlaylists, userId);
 }
@@ -46,7 +46,8 @@ function getAllPlaylists(spotifyApi, userId, offset) {
 
 function returnValidPlaylists(playlists, userId) {
     return playlists.filter(function (playlist) {
-        return (playlist.owner.id === userId && playlist.tracks.total > 0);
+        return (playlist.owner.id === userId &&
+            (playlist.name === "Hottest 100 Helper Shortlist" || playlist.tracks.total > 0));
     })
 }
 
@@ -62,7 +63,7 @@ export const getAllPlaylistTracks = async (spotifyApi, playlistId) => {
         offset += 50;
         let nextTracks = await getPlaylistTracks(spotifyApi, playlistId, offset);
         currentTracks = currentTracks.concat(nextTracks);
-    } while (currentTracks.length % 50 === 0)
+    } while (currentTracks.length % 50 === 0 && currentTracks.length > 0)
 
     return spotifyUtils.formatTracks(currentTracks);
 }
@@ -117,7 +118,7 @@ export const getAllSavedTracks = async (spotifyApi) => {
         offset += 50;
         let nextTracks = await getSavedTracks(spotifyApi, offset);
         currentTracks = currentTracks.concat(nextTracks);
-    } while (currentTracks.length % 50 === 0)
+    } while (currentTracks.length % 50 === 0 && currentTracks.length > 0)
 
     return spotifyUtils.formatTracks(currentTracks);
 }
@@ -150,7 +151,7 @@ export const getAllSavedAlbumTracks = async (spotifyApi) => {
         offset += 50;
         let nextAlbums = await getSavedAlbums(spotifyApi, offset);
         currentAlbums = currentAlbums.concat(nextAlbums);
-    } while (currentAlbums.length % 50 === 0)
+    } while (currentAlbums.length % 50 === 0 && currentAlbums.length > 0)
 
     currentAlbums = returnValidAlbums(currentAlbums);
 

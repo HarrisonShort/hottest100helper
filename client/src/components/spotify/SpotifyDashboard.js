@@ -39,8 +39,6 @@ export const SpotifyDashboard = ({ code }) => {
 
     }, [accessToken]);
 
-    
-
     const separateHelperPlaylist = async (fetchedPlaylists) => {
         let shortlist = fetchedPlaylists.find((playlist) => playlist.name === "Hottest 100 Helper Shortlist");
         if (shortlist) {
@@ -67,20 +65,12 @@ export const SpotifyDashboard = ({ code }) => {
         const fetchPlaylists = async () => {
             let fetchedPlaylists = await getFunctions.getAllPlaylistsAsync(spotifyApi, userData.id);
             fetchedPlaylists = await separateHelperPlaylist(fetchedPlaylists);
-    
+
             setPlaylists(fetchedPlaylists);
         }
 
         fetchPlaylists();
     }, [userData]);
-
-    useEffect(() => {
-
-    }, [playlists]);
-
-    useEffect(() => {
-
-    }, [currentTracks]);
 
     const handleButtonPress = async (buttonPressed) => {
         setCurrentTracks([]);

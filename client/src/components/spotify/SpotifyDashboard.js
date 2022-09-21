@@ -108,43 +108,66 @@ export const SpotifyDashboard = ({ code }) => {
         if (playlist) {
             let tracks = await getFunctions.getAllPlaylistTracks(spotifyApi, selectedPlaylistId);
 
-            tracks.forEach((track) => {
-                for (var index = 0; index < helperShortlist.tracks.length; index++) {
-                    track.inShortlist = track.spotify === helperShortlist.tracks[index].spotify;
-                    if (track.inShortlist) {
-                        break;
+            if (helperShortlist) {
+                tracks.forEach((track) => {
+                    for (var index = 0; index < helperShortlist.tracks.length; index++) {
+                        track.inShortlist = track.spotify === helperShortlist.tracks[index].spotify;
+                        if (track.inShortlist) {
+                            break;
+                        }
                     }
-                }
-            });
+                });
+            }
 
+            if (tracks.length === 0) {
+                setWarningText('No songs available. This probably means none of the songs in this playlist are from this year!');
+            }
             setCurrentTracks(tracks);
         }
     }
 
-    const handleShortlistButtonPress = async (row) => {
+    const handleShortlistButtonPress = async (tracks, row) => {
+        let modifiedShortlist
+
         if (!helperShortlist) {
             console.log("helper shortlist not found, creating...");
-            setHelperShortlist(await playlistFunctions.createHelperPlaylist(spotifyApi));
-        } else {
-            console.log(helperShortlist);
-            console.log(currentTracks);
-        }
+            let helperPlaylist = await playlistFunctions.createHelperPlaylist(spotifyApi);
+            let createdShortlist = {
+                playlist: helperPlaylist,
+                tracks: []
+            }
+            setHelperShortlist(createdShortlist);
 
+            modifiedShortlist = createdShortlist;
+        } else {
+            modifiedShortlist = helperShortlist;
+        }
         // update with whether the track in currentTracks has has been added or removed
         // either update the track in helperShortlist the same way
         // or pull the helperShortlist again and update
-        //let changedTrack = currentTracks.find((track) => track.spotify === row.original.spotify);
-        //console.log(changedTrack);
-        //changedTrack.inShortlist = !changedTrack.inShortlist
+        let changedTrackIndex = tracks.findIndex(track => track.song === row.original.song);
+        console.log(changedTrackIndex);
+
 
         if (row.original.inShortlist) {
-            await playlistFunctions.removeTrackFromPlaylist(spotifyApi, helperShortlist.playlist, row.original.spotify)
+            await playlistFunctions.removeTrackFromPlaylist(spotifyApi, helperShortlist.playlist, row.original.spotify);
+
+            let shortlistTrackIndex = modifiedShortlist.tracks.findIndex(track => track.song === row.original.song);
+            modifiedShortlist = modifiedShortlist.tracks.splice(shortlistTrackIndex, 1);
         } else {
-            await playlistFunctions.addTrackToPlaylist(spotifyApi, helperShortlist.playlist, row.original.spotify);
+            await playlistFunctions.addTrackToPlaylist(spotifyApi, modifiedShortlist.playlist, row.original.spotify);
+            modifiedShortlist.tracks.push(tracks[changedTrackIndex]);
         }
 
+        if (changedTrackIndex > -1) {
+            tracks[changedTrackIndex].inShortlist = !tracks[changedTrackIndex].inShortlist;
+        }
 
-        //setCurrentTracks(currentTracks);
+        setHelperShortlist(modifiedShortlist)
+        setCurrentTracks(tracks);
+
+        console.log(modifiedShortlist);
+        console.log(tracks);
     }
 
     // Show logging in message while we wait for user data to populate.

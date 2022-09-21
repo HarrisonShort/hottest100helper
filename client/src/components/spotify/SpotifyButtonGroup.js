@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import './SpotifyButtonGroup.css';
 
 export default function SpotifyButtonGroup(props) {
-    const [playlists, setPlaylists] = useState(props.playlists);
-
-    useEffect(() => {
-        setPlaylists(props.playlists);
-    }, [props])
-
     const handleDropdownSelect = (event) => {
         props.handlePlaylistSelect(event.target.value);
     }

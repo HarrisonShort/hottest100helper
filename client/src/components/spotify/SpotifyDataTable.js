@@ -6,7 +6,7 @@ import './SpotifyDataTable.css';
 
 export default function SpotifyDataTable(props) {
     const columns = useMemo(() => COLUMNS, []);
-    const data = useMemo(() => props.tracks, [props.tracks]);
+    const data = useMemo(() => [...props.tracks], [props.tracks]);
 
     const tableHooks = (hooks) => {
         hooks.visibleColumns.push((columns) => [

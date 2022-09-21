@@ -6,26 +6,15 @@ import './SpotifyDataTable.css';
 
 export default function SpotifyDataTable(props) {
     const columns = useMemo(() => COLUMNS, []);
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-        setData(props.tracks);
-        console.log('data set to props.tracks')
-        console.log(props.tracks)
-    }, [props]);
-
-    const onShortlistButtonPressed = (row) => {
-        row.original.inShortlist = !row.original.inShortlist;
-        props.handleShortlistButtonPress(row);
-    }
+    const data = useMemo(() => props.tracks, [props.tracks]);
 
     const tableHooks = (hooks) => {
         hooks.visibleColumns.push((columns) => [
             ...columns, {
                 id: "shortlist",
                 Header: "Shortlist",
-                Cell: ({ row }) => (
-                    <button onClick={() => onShortlistButtonPressed(row)}>{row.original.inShortlist ? "Remove" : "Add"}</button>
+                Cell: ({ data, row }) => (
+                    <button onClick={() => props.handleShortlistButtonPress(data, row)}>{row.original.inShortlist ? "Remove" : "Add"}</button>
                 )
             }
         ])
@@ -63,7 +52,7 @@ export default function SpotifyDataTable(props) {
                 }
             </tr>
         );
-    }))
+    }));
 
     return (
         <div>

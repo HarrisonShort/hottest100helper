@@ -88,7 +88,6 @@ export const processShortlistButtonPress = async (spotifyApi, changedTrack, play
         let shortlistTrackIndex = shortlist.tracks.findIndex(track => track.song === changedTrack.song);
         shortlist = shortlist.tracks.splice(shortlistTrackIndex, 1);
     } else {
-        console.log(shortlist)
         await addTrackToPlaylist(spotifyApi, shortlist.playlist, changedTrack.spotify);
         shortlist.tracks.push(playlistTracks[changedTrackIndex]);
     }
@@ -96,10 +95,7 @@ export const processShortlistButtonPress = async (spotifyApi, changedTrack, play
     if (changedTrackIndex > -1) {
         playlistTracks[changedTrackIndex].inShortlist = !playlistTracks[changedTrackIndex].inShortlist;
     }
-    console.log({
-        'playlistTracks': playlistTracks,
-        'shortlist': shortlist
-    })
+
     return {
         'playlistTracks': playlistTracks,
         'shortlist': shortlist

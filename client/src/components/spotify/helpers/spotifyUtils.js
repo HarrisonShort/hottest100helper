@@ -52,9 +52,3 @@ function returnFormattedTrack(track, album) {
         return;
     }
 }
-
-// Get all user playlists when logging in - DONE
-// Get the Hottest 100 Helper playlist if it exists - DONE
-// Implement adding to playlist - DONE
-// If playlist doesn't exist, create playlist - DONE
-// Implement removing from the playlist 

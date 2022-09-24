@@ -1,7 +1,5 @@
 import * as spotifyUtils from "./spotifyUtils";
 
-let helperPlaylist = null;
-
 export const getUserData = (spotifyApi) => {
     return new Promise(resolve => {
         spotifyApi.getMe()
@@ -70,7 +68,10 @@ export const getAllPlaylistTracks = async (spotifyApi, playlistId) => {
 
 function getPlaylistTracks(spotifyApi, playlistId, offset) {
     return new Promise(resolve => {
-        spotifyApi.getPlaylistTracks(playlistId, { limit: 50, offset: offset })
+        spotifyApi.getPlaylistTracks(playlistId, {
+            limit: 50,
+            offset: offset
+        })
             .then((data) => {
                 resolve(data.body.items);
             })

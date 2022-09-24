@@ -15,17 +15,6 @@ export const createHelperShortlist = async (spotifyApi) => {
     });
 }
 
-/* Adds a given track to a given playlist. */
-export const addTrackToPlaylist = async (spotifyApi, playlist, track) => {
-    spotifyApi.addTracksToPlaylist(playlist.id, [track])
-        .then(function (data) {
-            console.log('Added tracks to playlist!');
-        })
-        .catch((err) => {
-            console.log('Something went wrong!', err);
-        });
-}
-
 export const getHelperShortlistTracks = async (spotifyApi, shortlist) => {
     let tracks = [];
 
@@ -54,6 +43,17 @@ export const findPlaylistTracksInShortlist = (tracks, shortlistTracks) => {
     });
 
     return tracks;
+}
+
+/* Adds a given track to a given playlist. */
+export const addTrackToPlaylist = async (spotifyApi, playlist, track) => {
+    spotifyApi.addTracksToPlaylist(playlist.id, [track])
+        .then(function (data) {
+            console.log('Added tracks to playlist!');
+        })
+        .catch((err) => {
+            console.log('Something went wrong!', err);
+        });
 }
 
 /* Removes a given track from a given playlist. */

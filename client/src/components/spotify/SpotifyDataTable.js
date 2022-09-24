@@ -2,13 +2,23 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { COLUMNS } from './spotifydatatablecolumns';
 import { useTable } from 'react-table';
 
+import './SpotifyDataTable.css';
+
 export default function SpotifyDataTable(props) {
     const columns = useMemo(() => COLUMNS, []);
-    const [data, setData] = useState([]);
+    const data = useMemo(() => [...props.tracks], [props.tracks]);
 
-    useEffect(() => {
-        setData(props.tracks);
-    }, [props])
+    const tableHooks = (hooks) => {
+        hooks.visibleColumns.push((columns) => [
+            ...columns, {
+                id: "shortlist",
+                Header: "Shortlist",
+                Cell: ({ data, row }) => (
+                    <button onClick={() => props.handleShortlistButtonPress(data, row)}>{row.original.inShortlist ? "Remove" : "Add"}</button>
+                )
+            }
+        ])
+    }
 
     const {
         getTableProps,
@@ -19,7 +29,7 @@ export default function SpotifyDataTable(props) {
     } = useTable({
         columns,
         data
-    });
+    }, tableHooks);
 
     const noDataJsx = <p>{props.warningText}</p>;
     const headersJsx = (headerGroups.map(headerGroup => (
@@ -42,7 +52,7 @@ export default function SpotifyDataTable(props) {
                 }
             </tr>
         );
-    }))
+    }));
 
     return (
         <div>

@@ -1,7 +1,0 @@
-#overlay-background {
-    width: 100%;
-    height: calc(100% - 175px);
-    background-color: rgba(0, 0, 0, 90%);
-    position: absolute;
-    z-index: 1;
-}

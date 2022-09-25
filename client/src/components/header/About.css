@@ -1,0 +1,33 @@
+#overlay-background {
+    width: 100%;
+    height: calc(100% - 175px);
+    background-color: rgba(0, 0, 0, 90%);
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-container {
+    height:80%;
+    width: 60%;
+    background-color: white;
+    -ms-transform: translateY(15%);
+    transform: translateY(15%);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-container p {
+    margin: 0 5% 1% 5%;
+}
+
+.small-text {
+    font-size: 10px;
+}
+
+.disclaimer {
+    padding-top: 2%;
+}

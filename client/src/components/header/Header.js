@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import { loginUrl } from '../../spotifyConfig'
-import About from '../pages/About';
+import About from './About';
+import HowItWorks from './HowItWorks';
 import './Header.css';
 
 export default function Header(props) {
     const [showAbout, setShowAbout] = useState(false);
+    const [showHowItWorks, setShowHowItWorks] = useState(false);
 
     const signInJsx = <a href={loginUrl}>Sign in with Spotify!</a>
     const userNameJsx = <p className="user-name">{props.username}</p>;
     const imageJsx = <img src={props.image} alt="user" className="user-image"></img>
 
-    function openAboutOverlay() {
+    function toggleAboutOverlay() {
+        setShowHowItWorks(false)
         setShowAbout(!showAbout)
     }
 
+    function toggleHowItWorksOverlay() {
+        setShowAbout(false);
+        setShowHowItWorks(!showHowItWorks)
+    }
+
     useEffect(() => {
-        document.body.style.overflow = showAbout ? 'hidden' : 'auto';
-    }, [showAbout])
+        document.body.style.overflow = showAbout || showHowItWorks ? 'hidden' : 'auto';
+    }, [showAbout, showHowItWorks])
 
     return (
         <div>
@@ -26,8 +34,11 @@ export default function Header(props) {
                         <p>Hottest 100 Helper</p>
                     </div>
                     <div className="nav-links">
-                        <button onClick={() => openAboutOverlay()}>
+                        <button onClick={() => toggleAboutOverlay()}>
                             About
+                        </button>
+                        <button onClick={() => toggleHowItWorksOverlay()}>
+                            How It Works
                         </button>
                     </div>
                     <div className="user-details">
@@ -37,7 +48,8 @@ export default function Header(props) {
                     </div>
                 </div>
             </nav>
-            {showAbout ? <About /> : null}
+            {showAbout ? <About close={toggleAboutOverlay} /> : null}
+            {showHowItWorks ? <HowItWorks close={toggleHowItWorksOverlay} /> : null}
         </div>
     )
 };

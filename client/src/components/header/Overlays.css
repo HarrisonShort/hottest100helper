@@ -1,0 +1,28 @@
+#overlay-background {
+    width: 100%;
+    height: calc(100% - 175px);
+    background-color: rgba(0, 0, 0, 90%);
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-container {
+    height:80%;
+    width: 60%;
+    background-color: white;
+    -ms-transform: translateY(15%);
+    transform: translateY(15%);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.close-button {
+    position: absolute;
+    top: 1%;
+    right: 1%;
+    background: none;
+}

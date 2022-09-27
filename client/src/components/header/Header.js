@@ -31,7 +31,7 @@ export default function Header(props) {
             <nav className="header">
                 <div className="header-container">
                     <div className="header-title">
-                        <p>Hottest 100 Helper</p>
+                        <p>Hottest 100 Helper 2022</p>
                     </div>
                     <div className="nav-links">
                         <button onClick={() => toggleAboutOverlay()}>

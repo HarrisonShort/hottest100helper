@@ -2,8 +2,11 @@
 https://github.com/gopinav/React-Table-Tutorials/blob/master/react-table-demo/src/components/table.css */
 
 table {
-    width: 100%;
+    width: 80%;
     border-collapse: collapse;
+    margin: auto;
+    margin-bottom: 75px;
+    align-self: center;
 }
 
 table tr:nth-child(even) {

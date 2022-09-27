@@ -56,6 +56,7 @@ export default function SpotifyDataTable(props) {
 
     return (
         <div>
+            {data.length === 0 ? noDataJsx : ""}
             <table {...getTableProps()}>
                 <thead>
                     {headersJsx}
@@ -64,7 +65,7 @@ export default function SpotifyDataTable(props) {
                     {rowsJsx}
                 </tbody>
             </table>
-            {data.length === 0 ? noDataJsx : ""}
+
         </div>
     )
 }

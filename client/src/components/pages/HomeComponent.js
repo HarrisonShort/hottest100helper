@@ -6,10 +6,9 @@ import Footer from "../footer/Footer";
 
 function HomeComponent() {
     return (
-        <div className="App">
+        <div className="Home">
             <Header />
             <TripleJTable />
-            <Footer />
         </div>
     );
 }

@@ -87,8 +87,7 @@ export const processShortlistButtonPress = async (spotifyApi, changedTrack, play
     if (changedTrack.inShortlist) {
         await removeTrackFromPlaylist(spotifyApi, shortlist.playlist, changedTrack.spotify);
 
-        let shortlistTrackIndex = shortlist.tracks.findIndex(track => track.song === changedTrack.song);
-        shortlist = shortlist.tracks.splice(shortlistTrackIndex, 1);
+        shortlist.tracks = shortlist.tracks.filter(track => track.song !== changedTrack.song);
     } else {
         await addTrackToPlaylist(spotifyApi, shortlist.playlist, changedTrack.spotify);
         shortlist.tracks.push(playlistTracks[changedTrackIndex]);

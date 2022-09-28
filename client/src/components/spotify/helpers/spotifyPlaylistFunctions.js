@@ -34,19 +34,6 @@ export const getHelperShortlistTracks = async (spotifyApi, shortlist) => {
     };
 }
 
-export const findPlaylistTracksInShortlist = (tracks, shortlistTracks) => {
-    tracks.forEach((track) => {
-        for (var index = 0; index < shortlistTracks.length; index++) {
-            track.inShortlist = track.spotify === shortlistTracks[index].spotify;
-            if (track.inShortlist) {
-                break;
-            }
-        }
-    });
-
-    return tracks;
-}
-
 /* Adds a given track to a given playlist. */
 export const addTrackToPlaylist = async (spotifyApi, playlist, track) => {
     spotifyApi.addTracksToPlaylist(playlist.id, [track])

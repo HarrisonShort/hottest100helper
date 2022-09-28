@@ -67,16 +67,13 @@ export const SpotifyDashboard = ({ code }) => {
 
         switch (buttonPressed) {
             case sortTypes[0]:
-                setCurrentTracks(await getFunctions.getAllTopTracks(spotifyApi));
-                setWarningText("No songs available. This probably means none of your top tracks are from this year!");
+                applyButtonPressTracks(await getFunctions.getAllTopTracks(spotifyApi), "No songs available. This probably means none of your top tracks are from this year!");
                 break;
             case sortTypes[1]:
-                setCurrentTracks(await getFunctions.getAllSavedTracks(spotifyApi));
-                setWarningText("No songs available. This probably means none of your saved tracks are from this year!");
+                applyButtonPressTracks(await getFunctions.getAllSavedTracks(spotifyApi), "No songs available. This probably means none of your saved tracks are from this year!");
                 break;
             case sortTypes[2]:
-                setCurrentTracks(await getFunctions.getAllSavedAlbumTracks(spotifyApi));
-                setWarningText("No songs available. This probably means none of your saved albums are from this year!");
+                applyButtonPressTracks(await getFunctions.getAllSavedAlbumTracks(spotifyApi), "No songs available. This probably means none of your saved albums are from this year!");
                 break;
             case "shortlist":
                 setCurrentTracks(helperShortlist.tracks);
@@ -86,6 +83,15 @@ export const SpotifyDashboard = ({ code }) => {
                 console.log(`${buttonPressed} not yet implemented`);
                 break;
         }
+    }
+
+    const applyButtonPressTracks = (tracks, textForWarning) => {
+        if (helperShortlist.tracks.length > 0) {
+            tracks = spotifyUtils.findTracksInShortlist(tracks, helperShortlist.tracks);
+        }
+
+        setCurrentTracks(tracks);
+        setWarningText(textForWarning)
     }
 
     const handlePlaylistSelect = async (selectedPlaylistId) => {
@@ -102,7 +108,7 @@ export const SpotifyDashboard = ({ code }) => {
             let playlistTracks = await getFunctions.getAllPlaylistTracks(spotifyApi, selectedPlaylistId);
 
             if (helperShortlist) {
-                playlistTracks = playlistFunctions.findPlaylistTracksInShortlist(playlistTracks, helperShortlist.tracks);
+                playlistTracks = spotifyUtils.findTracksInShortlist(playlistTracks, helperShortlist.tracks);
             }
 
             if (playlistTracks.length === 0) {

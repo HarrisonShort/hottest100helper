@@ -52,3 +52,16 @@ function returnFormattedTrack(track, album) {
         return;
     }
 }
+
+export const findTracksInShortlist = (tracks, shortlistTracks) => {
+    tracks.forEach((track) => {
+        for (var index = 0; index < shortlistTracks.length; index++) {
+            track.inShortlist = track.spotify === shortlistTracks[index].spotify;
+            if (track.inShortlist) {
+                break;
+            }
+        }
+    });
+
+    return tracks;
+}

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { COLUMNS } from './spotifydatatablecolumns';
-import { useTable } from 'react-table';
+import { useTable, useSortBy } from 'react-table';
 
 import './SpotifyDataTable.css';
 
@@ -29,14 +29,19 @@ export default function SpotifyDataTable(props) {
     } = useTable({
         columns,
         data
-    }, tableHooks);
+    }, useSortBy, tableHooks);
 
     const noDataJsx = <p>{props.warningText}</p>;
     const headersJsx = (headerGroups.map(headerGroup => (
         <tr {...headerGroup.getHeaderGroupProps()}>
             {
                 headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                        {column.render('Header')}
+                        <span className="sort-icon">
+                            {column.isSorted ? (column.isSortedDesc ? "🔽" : "🔼") : ""}
+                        </span>
+                    </th>
                 ))
             }
         </tr>

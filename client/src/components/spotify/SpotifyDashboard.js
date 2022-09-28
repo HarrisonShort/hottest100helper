@@ -78,6 +78,10 @@ export const SpotifyDashboard = ({ code }) => {
                 setCurrentTracks(await getFunctions.getAllSavedAlbumTracks(spotifyApi));
                 setWarningText("No songs available. This probably means none of your saved albums are from this year!");
                 break;
+            case "shortlist":
+                setCurrentTracks(helperShortlist.tracks);
+                setWarningText("There are no tracks in your shortlist!");
+                break;
             default:
                 console.log(`${buttonPressed} not yet implemented`);
                 break;
@@ -133,7 +137,7 @@ export const SpotifyDashboard = ({ code }) => {
     return (
         <div>
             <Header username={userData.display_name} image={userData.images[0].url} />
-            <SpotifyButtonGroup types={sortTypes} handleButtonPress={handleButtonPress} playlists={playlists} handlePlaylistSelect={handlePlaylistSelect} />
+            <SpotifyButtonGroup types={sortTypes} handleButtonPress={handleButtonPress} playlists={playlists} handlePlaylistSelect={handlePlaylistSelect} noShortlist={helperShortlist == null} />
             <SpotifyDataTable tracks={currentTracks} warningText={warningText} handleShortlistButtonPress={handleShortlistButtonPress} />
         </div>
     )

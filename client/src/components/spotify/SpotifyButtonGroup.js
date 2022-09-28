@@ -21,6 +21,7 @@ export default function SpotifyButtonGroup(props) {
                     ))
                 }
             </select>
+            <button key="shortlist" onClick={() => props.handleButtonPress("shortlist")} disabled={props.noShortlist}>Your Shortlist</button>
         </div>
     )
 }

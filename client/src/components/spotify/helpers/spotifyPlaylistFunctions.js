@@ -26,6 +26,8 @@ export const getHelperShortlistTracks = async (spotifyApi, shortlist) => {
             console.log(`${getHelperShortlistTracks.name}: ${err}`);
         });
 
+    tracks.forEach(track => track.inShortlist = true);
+
     return {
         'playlist': shortlist,
         'tracks': tracks

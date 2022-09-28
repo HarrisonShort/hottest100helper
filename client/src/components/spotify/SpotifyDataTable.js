@@ -38,9 +38,13 @@ export default function SpotifyDataTable(props) {
                 headerGroup.headers.map(column => (
                     <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                         {column.render('Header')}
-                        <span className="sort-icon">
-                            {column.isSorted ? (column.isSortedDesc ? "🔽" : "🔼") : ""}
-                        </span>
+                        {
+                            column.id == "shortlist" ? null : <span className="sort-icon">
+                                {column.isSorted ?
+                                    (column.isSortedDesc ?
+                                        <img src={"../images/down_arrow.png"} alt="desc" /> : <img src={"../images/up_arrow.png"} alt="asc" />) : <img src={"../images/both_arrow.png"} alt="both" />}
+                            </span>
+                        }
                     </th>
                 ))
             }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { COLUMNS } from './spotifydatatablecolumns';
 import { useTable } from 'react-table';
 
@@ -56,16 +56,16 @@ export default function SpotifyDataTable(props) {
 
     return (
         <div>
-            {data.length === 0 ? noDataJsx : ""}
-            <table {...getTableProps()}>
-                <thead>
-                    {headersJsx}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {rowsJsx}
-                </tbody>
-            </table>
-
+            {data.length === 0 ? noDataJsx :
+                <table {...getTableProps()}>
+                    <thead>
+                        {headersJsx}
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                        {rowsJsx}
+                    </tbody>
+                </table>
+            }
         </div>
     )
 }

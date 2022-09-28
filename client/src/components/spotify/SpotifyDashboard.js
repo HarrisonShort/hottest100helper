@@ -142,9 +142,19 @@ export const SpotifyDashboard = ({ code }) => {
 
     return (
         <div>
-            <Header username={userData.display_name} image={userData.images[0].url} />
-            <SpotifyButtonGroup types={sortTypes} handleButtonPress={handleButtonPress} playlists={playlists} handlePlaylistSelect={handlePlaylistSelect} noShortlist={helperShortlist == null} />
-            <SpotifyDataTable tracks={currentTracks} warningText={warningText} handleShortlistButtonPress={handleShortlistButtonPress} />
+            <Header
+                username={userData.display_name}
+                image={userData.images[0].url} />
+            <SpotifyButtonGroup
+                types={sortTypes}
+                playlists={playlists}
+                noShortlist={helperShortlist == null}
+                handleButtonPress={handleButtonPress}
+                handlePlaylistSelect={handlePlaylistSelect} />
+            <SpotifyDataTable
+                tracks={currentTracks}
+                warningText={warningText}
+                handleShortlistButtonPress={handleShortlistButtonPress} />
         </div>
     )
 }

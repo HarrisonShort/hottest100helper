@@ -27,3 +27,8 @@ table th {
 table th:last-child {
     width: 5%;
 }
+
+.sort-icon img {
+    float: right;
+    max-width: 20px;
+}

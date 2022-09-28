@@ -1,12 +1,14 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { COLUMNS } from './spotifydatatablecolumns';
-import { useTable } from 'react-table';
+import { useTable, useSortBy } from 'react-table';
 
 import './SpotifyDataTable.css';
+import { useEffect } from 'react';
 
 export default function SpotifyDataTable(props) {
     const columns = useMemo(() => COLUMNS, []);
     const data = useMemo(() => [...props.tracks], [props.tracks]);
+    const [currentSort, setCurrentSort] = useState();
 
     const tableHooks = (hooks) => {
         hooks.visibleColumns.push((columns) => [
@@ -25,18 +27,36 @@ export default function SpotifyDataTable(props) {
         getTableBodyProps,
         headerGroups,
         rows,
-        prepareRow
+        prepareRow,
+        state: { sortBy }
     } = useTable({
         columns,
-        data
-    }, tableHooks);
+        data,
+        initialState: { sortBy: currentSort }
+    },
+        useSortBy,
+        tableHooks
+    );
+
+    useEffect(() => {
+        setCurrentSort(sortBy)
+    }, [sortBy])
 
     const noDataJsx = <p>{props.warningText}</p>;
     const headersJsx = (headerGroups.map(headerGroup => (
         <tr {...headerGroup.getHeaderGroupProps()}>
             {
                 headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                        {column.render('Header')}
+                        {
+                            column.id === "shortlist" ? null : <span className="sort-icon">
+                                {column.isSorted ?
+                                    (column.isSortedDesc ? <img src={"../images/down_arrow.png"} alt="desc" /> : <img src={"../images/up_arrow.png"} alt="asc" />)
+                                    : <img src={"../images/both_arrow.png"} alt="both" />}
+                            </span>
+                        }
+                    </th>
                 ))
             }
         </tr>

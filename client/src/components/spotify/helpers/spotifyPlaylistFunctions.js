@@ -26,23 +26,12 @@ export const getHelperShortlistTracks = async (spotifyApi, shortlist) => {
             console.log(`${getHelperShortlistTracks.name}: ${err}`);
         });
 
+    tracks.forEach(track => track.inShortlist = true);
+
     return {
         'playlist': shortlist,
         'tracks': tracks
     };
-}
-
-export const findPlaylistTracksInShortlist = (tracks, shortlistTracks) => {
-    tracks.forEach((track) => {
-        for (var index = 0; index < shortlistTracks.length; index++) {
-            track.inShortlist = track.spotify === shortlistTracks[index].spotify;
-            if (track.inShortlist) {
-                break;
-            }
-        }
-    });
-
-    return tracks;
 }
 
 /* Adds a given track to a given playlist. */
@@ -85,8 +74,7 @@ export const processShortlistButtonPress = async (spotifyApi, changedTrack, play
     if (changedTrack.inShortlist) {
         await removeTrackFromPlaylist(spotifyApi, shortlist.playlist, changedTrack.spotify);
 
-        let shortlistTrackIndex = shortlist.tracks.findIndex(track => track.song === changedTrack.song);
-        shortlist = shortlist.tracks.splice(shortlistTrackIndex, 1);
+        shortlist.tracks = shortlist.tracks.filter(track => track.song !== changedTrack.song);
     } else {
         await addTrackToPlaylist(spotifyApi, shortlist.playlist, changedTrack.spotify);
         shortlist.tracks.push(playlistTracks[changedTrackIndex]);

@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 export default function SpotifyDataTable(props) {
     const columns = useMemo(() => COLUMNS, []);
     const data = useMemo(() => [...props.tracks], [props.tracks]);
-    const [currentSort, setCurrentSort] = useState();
+    const [currentSort, setCurrentSort] = useState([]);
 
     const tableHooks = (hooks) => {
         hooks.visibleColumns.push((columns) => [

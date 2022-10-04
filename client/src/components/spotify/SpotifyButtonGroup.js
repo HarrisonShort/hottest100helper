@@ -20,10 +20,10 @@ export default function SpotifyButtonGroup(props) {
         <div className="button-group">
             {
                 props.types.map((type) => (
-                    <button key={type} onClick={() => onButtonClick(type)}>{type}</button>
+                    <button key={type} onClick={() => onButtonClick(type)} disabled={props.loading}>{type}</button>
                 ))
             }
-            <select onChange={handleDropdownSelect} value={playlistSelected}>
+            <select onChange={handleDropdownSelect} value={playlistSelected} disabled={props.loading}>
                 <option value={initialOptionValue}>Select a playlist</option>
                 {
                     props.playlists.map((playlist, index) => (
@@ -31,7 +31,7 @@ export default function SpotifyButtonGroup(props) {
                     ))
                 }
             </select>
-            <button key="shortlist" onClick={() => onButtonClick("shortlist")} disabled={props.noShortlist}>Your Shortlist</button>
+            <button key="shortlist" onClick={() => onButtonClick("shortlist")} disabled={props.noShortlist || props.loading}>Your Shortlist</button>
         </div>
     )
 }

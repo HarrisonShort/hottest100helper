@@ -15,6 +15,8 @@ const spotifyApi = new SpotifyWebApi({
     clientId: 'e46e02da24384042b7a9d4a7cab689df'
 });
 
+let loadingTracks = false;
+
 export const SpotifyDashboard = ({ code }) => {
     const [userData, setUserData] = useState();
     const [currentTracks, setCurrentTracks] = useState([]);
@@ -62,6 +64,8 @@ export const SpotifyDashboard = ({ code }) => {
     }, [userData]);
 
     const handleButtonPress = async (buttonPressed) => {
+        loadingTracks = true;
+
         setCurrentTracks([]);
         setWarningText("Loading tracks...");
 
@@ -83,6 +87,8 @@ export const SpotifyDashboard = ({ code }) => {
                 console.log(`${buttonPressed} not yet implemented`);
                 break;
         }
+
+        loadingTracks = false;
     }
 
     const applyButtonPressTracks = (tracks, textForWarning) => {
@@ -91,13 +97,15 @@ export const SpotifyDashboard = ({ code }) => {
         }
 
         setCurrentTracks(tracks);
-        setWarningText(textForWarning)
+        setWarningText(textForWarning);
     }
 
     const handlePlaylistSelect = async (selectedPlaylistId) => {
         if (!selectedPlaylistId) {
             return;
         }
+
+        loadingTracks = true;
 
         setCurrentTracks([]);
         setWarningText("Loading tracks...");
@@ -117,6 +125,8 @@ export const SpotifyDashboard = ({ code }) => {
 
             setCurrentTracks(playlistTracks);
         }
+
+        loadingTracks = false;
     }
 
     const handleShortlistButtonPress = async (playlistTracks, row) => {
@@ -148,6 +158,7 @@ export const SpotifyDashboard = ({ code }) => {
             <SpotifyButtonGroup
                 types={sortTypes}
                 playlists={playlists}
+                loading={loadingTracks}
                 noShortlist={helperShortlist == null}
                 handleButtonPress={handleButtonPress}
                 handlePlaylistSelect={handlePlaylistSelect} />

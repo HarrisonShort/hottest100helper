@@ -39,7 +39,7 @@ export default function SpotifyDataTable(props) {
     );
 
     useEffect(() => {
-        setCurrentSort(sortBy)
+        setCurrentSort(sortBy);
     }, [sortBy])
 
     const noDataJsx = <p>{props.warningText}</p>;

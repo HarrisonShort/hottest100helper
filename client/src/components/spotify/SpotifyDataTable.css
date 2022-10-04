@@ -1,0 +1,34 @@
+/* Some CSS has been adopted from gopinav React-Table-Tutorials (table.css)
+https://github.com/gopinav/React-Table-Tutorials/blob/master/react-table-demo/src/components/table.css */
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin: auto;
+    margin-bottom: 75px;
+    align-self: center;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tr:hover {
+    background-color: #ddd;
+}
+
+table th {
+    width: 20%;
+    border: 1px solid #ddd;
+    padding: 8px;
+    background-color: rgb(60, 222, 31);
+}
+
+table th:last-child {
+    width: 5%;
+}
+
+.sort-icon img {
+    float: right;
+    max-width: 20px;
+}

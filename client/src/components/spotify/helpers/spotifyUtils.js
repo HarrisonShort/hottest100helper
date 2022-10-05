@@ -65,3 +65,41 @@ export const findTracksInShortlist = (tracks, shortlistTracks) => {
 
     return tracks;
 }
+
+//#region Debug
+
+export const getAlbumsForTracks = (spotifyApi, tracks) => {
+    tracks.forEach((track, index) => {
+        setTimeout(() => {
+            spotifyApi.getTrack(track.spotify.replace('spotify:track:', ''))
+                .then((data) => {
+                    console.log(track.rank);
+                    tracks[index].album = data.body.album.name
+                    if (tracks.length === index + 1) {
+                        console.log(JSON.stringify(tracks));
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }, 100 * index)
+    });
+}
+
+export const fixRanks = (tracks) => {
+    tracks.forEach((track, index) => {
+        tracks[index].rank = index + 1;
+    });
+
+    console.log(JSON.stringify(tracks));
+}
+
+export const fixTimestamps = (tracks) => {
+    tracks.forEach((track, index) => {
+        tracks[index].release_date = tracks[index].release_date.substring(0, 10);
+    });
+
+    console.log(JSON.stringify(tracks));
+}
+
+//#endregion

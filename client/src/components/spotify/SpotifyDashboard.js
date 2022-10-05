@@ -5,11 +5,13 @@ import useAuth from "../../useAuth";
 import Header from '../header/Header';
 import SpotifyButtonGroup from "./SpotifyButtonGroup";
 import SpotifyDataTable from "./SpotifyDataTable.js";
-import Footer from "../footer/Footer";
+import DebugOptions from "../Debug/DebugOptions";
 
 import * as spotifyUtils from "./helpers/spotifyUtils";
 import * as getFunctions from './helpers/spotifyGetFunctions';
 import * as playlistFunctions from './helpers/spotifyPlaylistFunctions';
+
+import { COLUMNS } from './spotifydatatablecolumns';
 
 const spotifyApi = new SpotifyWebApi({
     clientId: 'e46e02da24384042b7a9d4a7cab689df'
@@ -163,9 +165,11 @@ export const SpotifyDashboard = ({ code }) => {
                 handleButtonPress={handleButtonPress}
                 handlePlaylistSelect={handlePlaylistSelect} />
             <SpotifyDataTable
+                columns={COLUMNS}
                 tracks={currentTracks}
                 warningText={warningText}
-                handleShortlistButtonPress={handleShortlistButtonPress} />
+                handleShortlistButtonPress={handleShortlistButtonPress}
+                showShortlist={true} />
         </div>
     )
 }

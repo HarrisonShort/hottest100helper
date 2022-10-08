@@ -48,7 +48,7 @@ export default function SpotifyDataTable(props) {
         <tr {...headerGroup.getHeaderGroupProps()}>
             {
                 headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())} id={column.id}>
                         {column.render('Header')}
                         {
                             column.id === "shortlist" ? null : <span className="sort-icon">

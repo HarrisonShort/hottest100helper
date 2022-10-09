@@ -114,20 +114,21 @@ export default function SpotifyDataTable(props) {
 
     return (
         <div className="table-container">
-            {data.length === 0 ?
-                <p>{props.warningText}</p> :
-                <table {...getTableProps()}>
-                    <thead>
-                        {
-                            headerGroups.map(headerGroup => (
-                                drawColumnHeaderGroup(headerGroup)
-                            ))
-                        }
-                    </thead>
-                    <tbody {...getTableBodyProps()}>
-                        {drawDataRows()}
-                    </tbody>
-                </table>
+            {
+                data.length === 0 ?
+                    <p>{props.warningText}</p> :
+                    <table {...getTableProps()}>
+                        <thead>
+                            {
+                                headerGroups.map(headerGroup => (
+                                    drawColumnHeaderGroup(headerGroup)
+                                ))
+                            }
+                        </thead>
+                        <tbody {...getTableBodyProps()}>
+                            {drawDataRows()}
+                        </tbody>
+                    </table>
             }
         </div>
     )

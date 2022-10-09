@@ -29,3 +29,19 @@
     font-size: 20px;
     cursor: pointer;
 }
+
+@media (max-width: 1000px) {
+    .info-container {
+        width: 75%;
+    }
+}
+
+@media (max-width: 600px) {
+    #overlay-background {
+        height: calc(100% - 75px);
+    }
+
+    .info-container {
+        width: 90%;
+    }
+}

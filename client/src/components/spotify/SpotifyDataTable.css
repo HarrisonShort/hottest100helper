@@ -36,3 +36,9 @@ table th {
     float: right;
     max-width: 20px;
 }
+
+@media (max-width: 600px) {
+    table {
+        width: 100%;
+    }
+}

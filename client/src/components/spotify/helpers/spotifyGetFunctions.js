@@ -87,10 +87,24 @@ function getPlaylistTracks(spotifyApi, playlistId, offset) {
 
 export const getAllTopTracks = async (spotifyApi, timeRange) => {
     let topTracks = await getTopTracks(spotifyApi, "short_term");
-    topTracks = topTracks.concat(await getTopTracks(spotifyApi, "medium_term"));
-    topTracks = topTracks.concat(await getTopTracks(spotifyApi, "long_term"));
+
+    let mediumTermTracks = await getTopTracks(spotifyApi, "medium_term");
+    topTracks = addToTopTracksWithoutDuplicates(topTracks, mediumTermTracks);
+
+    let longTermTracks = await getTopTracks(spotifyApi, "long_term");
+    topTracks = addToTopTracksWithoutDuplicates(topTracks, longTermTracks);
 
     return spotifyUtils.formatTracks(topTracks);
+}
+
+const addToTopTracksWithoutDuplicates = (topTracks, newTracks) => {
+    newTracks.forEach((track) => {
+        if (!topTracks.some((topTrack) => topTrack.uri === track.uri)) {
+            topTracks.push(track);
+        }
+    });
+
+    return topTracks;
 }
 
 const getTopTracks = (spotifyApi, timeRange) => {

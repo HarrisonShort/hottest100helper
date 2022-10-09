@@ -1,6 +1,10 @@
 /* Some CSS has been adopted from gopinav React-Table-Tutorials (table.css)
 https://github.com/gopinav/React-Table-Tutorials/blob/master/react-table-demo/src/components/table.css */
 
+.table-container {
+    width: 100%;
+}
+
 table {
     width: 80%;
     border-collapse: collapse;
@@ -31,4 +35,10 @@ table th {
 .sort-icon img {
     float: right;
     max-width: 20px;
+}
+
+@media (max-width: 600px) {
+    table {
+        width: 100%;
+    }
 }

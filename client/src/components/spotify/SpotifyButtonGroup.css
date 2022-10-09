@@ -1,23 +1,49 @@
+.button-group-container {
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
 .button-group {
     height: 50px;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     justify-self: center;
-    margin-left: 15%;
-    margin-right: 15%;
 }
 
 .button-group * {
     /* border: 1px solid red; */
+    height: 80%;
+    border-radius: 5px;
+    margin-left: 5%;
 }
 
-.button-group button {
-    height: 40px;
-    border-radius: 5px;
+.button-group > button:first-child {
+    margin-left: 0;
 }
 
 .button-group select {
-    height: 40px;
-    border-radius: 5px;
+    width: 50%;
+}
+
+@media (max-width: 1200) {
+    .button-group-container {
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+
+    .button-group select {
+        width: 45%;
+    }
+}
+
+@media (max-width: 600px) {
+    .button-group-container {
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+
+    .button-group select {
+        width: 40%;
+    }
 }

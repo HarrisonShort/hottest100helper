@@ -23,8 +23,14 @@ export default function Header(props) {
     }
 
     useEffect(() => {
-        document.body.style.overflow = showAbout || showHowItWorks ? 'hidden' : 'auto';
-    }, [showAbout, showHowItWorks])
+        // TODO: This goes against React best practices by directly modifying the node.
+        // Realistically we should be able to update the style of the node, but at this 
+        // time that would require prop-drilling a reference to app-container into this 
+        // component... I think...
+        let appNodeStyle = document.getElementsByClassName("app-container")[0].style;
+        appNodeStyle.overflow = showAbout || showHowItWorks ? 'hidden' : 'auto';
+        appNodeStyle.position = showAbout || showHowItWorks ? 'fixed' : 'static';
+    }, [showAbout, showHowItWorks]);
 
     return (
         <div>

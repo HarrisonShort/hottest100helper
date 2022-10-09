@@ -5,15 +5,19 @@ import useAuth from "../../useAuth";
 import Header from '../header/Header';
 import SpotifyButtonGroup from "./SpotifyButtonGroup";
 import SpotifyDataTable from "./SpotifyDataTable.js";
-import Footer from "../footer/Footer";
+import DebugOptions from "../Debug/DebugOptions";
 
 import * as spotifyUtils from "./helpers/spotifyUtils";
 import * as getFunctions from './helpers/spotifyGetFunctions';
 import * as playlistFunctions from './helpers/spotifyPlaylistFunctions';
 
+import { COLUMNS } from './spotifydatatablecolumns';
+
 const spotifyApi = new SpotifyWebApi({
     clientId: 'e46e02da24384042b7a9d4a7cab689df'
 });
+
+let loadingTracks = false;
 
 export const SpotifyDashboard = ({ code }) => {
     const [userData, setUserData] = useState();
@@ -62,6 +66,8 @@ export const SpotifyDashboard = ({ code }) => {
     }, [userData]);
 
     const handleButtonPress = async (buttonPressed) => {
+        loadingTracks = true;
+
         setCurrentTracks([]);
         setWarningText("Loading tracks...");
 
@@ -83,6 +89,8 @@ export const SpotifyDashboard = ({ code }) => {
                 console.log(`${buttonPressed} not yet implemented`);
                 break;
         }
+
+        loadingTracks = false;
     }
 
     const applyButtonPressTracks = (tracks, textForWarning) => {
@@ -91,13 +99,15 @@ export const SpotifyDashboard = ({ code }) => {
         }
 
         setCurrentTracks(tracks);
-        setWarningText(textForWarning)
+        setWarningText(textForWarning);
     }
 
     const handlePlaylistSelect = async (selectedPlaylistId) => {
         if (!selectedPlaylistId) {
             return;
         }
+
+        loadingTracks = true;
 
         setCurrentTracks([]);
         setWarningText("Loading tracks...");
@@ -117,6 +127,8 @@ export const SpotifyDashboard = ({ code }) => {
 
             setCurrentTracks(playlistTracks);
         }
+
+        loadingTracks = false;
     }
 
     const handleShortlistButtonPress = async (playlistTracks, row) => {
@@ -148,13 +160,16 @@ export const SpotifyDashboard = ({ code }) => {
             <SpotifyButtonGroup
                 types={sortTypes}
                 playlists={playlists}
+                loading={loadingTracks}
                 noShortlist={helperShortlist == null}
                 handleButtonPress={handleButtonPress}
                 handlePlaylistSelect={handlePlaylistSelect} />
             <SpotifyDataTable
+                columns={COLUMNS}
                 tracks={currentTracks}
                 warningText={warningText}
-                handleShortlistButtonPress={handleShortlistButtonPress} />
+                handleShortlistButtonPress={handleShortlistButtonPress}
+                showShortlist={true} />
         </div>
     )
 }

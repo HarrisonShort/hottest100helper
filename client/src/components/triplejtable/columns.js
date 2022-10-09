@@ -18,13 +18,5 @@ export const COLUMNS = [
     {
         Header: 'Release Date',
         accessor: 'release_date'
-    },
-    {
-        Header: 'Spotify',
-        accessor: 'spotify'
-    },
-    {
-        Header: 'YouTube',
-        accessor: 'youtube'
     }
 ]

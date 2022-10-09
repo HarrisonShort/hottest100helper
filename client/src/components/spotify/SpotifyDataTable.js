@@ -1,16 +1,17 @@
-import React, { useMemo, useState } from 'react'
-import { COLUMNS } from './spotifydatatablecolumns';
+import React, { useMemo, useState, useEffect } from 'react'
 import { useTable, useSortBy } from 'react-table';
-
 import './SpotifyDataTable.css';
-import { useEffect } from 'react';
 
 export default function SpotifyDataTable(props) {
-    const columns = useMemo(() => COLUMNS, []);
+    const columns = useMemo(() => [...props.columns], [props.columns]);
     const data = useMemo(() => [...props.tracks], [props.tracks]);
-    const [currentSort, setCurrentSort] = useState();
+    const [currentSort, setCurrentSort] = useState([]);
 
     const tableHooks = (hooks) => {
+        if (!props.showShortlist) {
+            return;
+        }
+
         hooks.visibleColumns.push((columns) => [
             ...columns, {
                 id: "shortlist",
@@ -39,7 +40,7 @@ export default function SpotifyDataTable(props) {
     );
 
     useEffect(() => {
-        setCurrentSort(sortBy)
+        setCurrentSort(sortBy);
     }, [sortBy])
 
     const noDataJsx = <p>{props.warningText}</p>;
@@ -47,7 +48,7 @@ export default function SpotifyDataTable(props) {
         <tr {...headerGroup.getHeaderGroupProps()}>
             {
                 headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())} id={column.id}>
                         {column.render('Header')}
                         {
                             column.id === "shortlist" ? null : <span className="sort-icon">

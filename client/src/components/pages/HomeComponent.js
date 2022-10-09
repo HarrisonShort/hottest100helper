@@ -1,14 +1,20 @@
 import React from "react";
 import '../../App.css';
-import { TripleJTable } from "../triplejtable/TripleJTable";
+
+import SpotifyDataTable from "../spotify/SpotifyDataTable";
 import Header from '../header/Header';
-import Footer from "../footer/Footer";
+
+import TRIPLE_J_DATA from '../triplejtable/TRIPLE_J_DATA.json';
+import { COLUMNS } from '../triplejtable/columns';
 
 function HomeComponent() {
     return (
         <div className="Home">
             <Header />
-            <TripleJTable />
+            <SpotifyDataTable
+                columns={COLUMNS}
+                tracks={TRIPLE_J_DATA}
+                showShortlist={false} />
         </div>
     );
 }

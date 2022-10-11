@@ -5,7 +5,6 @@ import useAuth from "../../useAuth";
 import Header from '../header/Header';
 import SpotifyButtonGroup from "./SpotifyButtonGroup";
 import SpotifyDataTable from "./SpotifyDataTable.js";
-import DebugOptions from "../Debug/DebugOptions";
 
 import * as spotifyUtils from "./helpers/spotifyUtils";
 import * as getFunctions from './helpers/spotifyGetFunctions';

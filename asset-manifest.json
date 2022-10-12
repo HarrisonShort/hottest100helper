@@ -1,16 +1,15 @@
 {
   "files": {
-    "main.css": "https://harrisonshort.github.io/hottest100helper/static/css/main.ab67807c.css",
-    "main.js": "https://harrisonshort.github.io/hottest100helper/static/js/main.8aab04b8.js",
-    "static/js/787.b701888c.chunk.js": "https://harrisonshort.github.io/hottest100helper/static/js/787.b701888c.chunk.js",
-    "static/media/kofi_button_dark.png": "https://harrisonshort.github.io/hottest100helper/static/media/kofi_button_dark.384a0db248f21b693d8c.png",
-    "index.html": "https://harrisonshort.github.io/hottest100helper/index.html",
-    "main.ab67807c.css.map": "https://harrisonshort.github.io/hottest100helper/static/css/main.ab67807c.css.map",
-    "main.8aab04b8.js.map": "https://harrisonshort.github.io/hottest100helper/static/js/main.8aab04b8.js.map",
-    "787.b701888c.chunk.js.map": "https://harrisonshort.github.io/hottest100helper/static/js/787.b701888c.chunk.js.map"
+    "main.css": "/hottest100helper/static/css/main.ab67807c.css",
+    "main.js": "/hottest100helper/static/js/main.b2fd9850.js",
+    "static/js/787.b701888c.chunk.js": "/hottest100helper/static/js/787.b701888c.chunk.js",
+    "index.html": "/hottest100helper/index.html",
+    "main.ab67807c.css.map": "/hottest100helper/static/css/main.ab67807c.css.map",
+    "main.b2fd9850.js.map": "/hottest100helper/static/js/main.b2fd9850.js.map",
+    "787.b701888c.chunk.js.map": "/hottest100helper/static/js/787.b701888c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ab67807c.css",
-    "static/js/main.8aab04b8.js"
+    "static/js/main.b2fd9850.js"
   ]
 }

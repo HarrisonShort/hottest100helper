@@ -1,6 +1,8 @@
 import React from 'react';
 import './Footer.css';
 
+const kofiImage = process.env.REACT_APP_NODE_ENV === 'production' ? './images/kofi_button_dark.png' : require('./images/kofi_button_dark.png');
+
 export default function Footer() {
     return (
         <div className="footer-container">
@@ -9,7 +11,7 @@ export default function Footer() {
             </p>
             <p className="kofi-button">
                 <a href="https://ko-fi.com/harrishun" target="_blank">
-                    <img src={'./images/kofi_button_dark.png'} alt="kofi-button" />
+                    <img src={kofiImage} alt="kofi-button" />
                 </a>
             </p>
         </div>

@@ -9,7 +9,7 @@ export default function Footer() {
             </p>
             <p className="kofi-button">
                 <a href="https://ko-fi.com/harrishun" target="_blank">
-                    <img src={'./images/kofi_button_dark.png'} alt="kofi-button" />
+                    <img src={'/images/kofi_button_dark.png'} alt="kofi-button" />
                 </a>
             </p>
         </div>

@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/hottest100helper/static/css/main.4986e647.css",
+    "main.js": "/hottest100helper/static/js/main.9905e952.js",
+    "static/js/787.b701888c.chunk.js": "/hottest100helper/static/js/787.b701888c.chunk.js",
+    "static/media/kofi_button_dark.png": "/hottest100helper/static/media/kofi_button_dark.384a0db248f21b693d8c.png",
+    "index.html": "/hottest100helper/index.html",
+    "main.4986e647.css.map": "/hottest100helper/static/css/main.4986e647.css.map",
+    "main.9905e952.js.map": "/hottest100helper/static/js/main.9905e952.js.map",
+    "787.b701888c.chunk.js.map": "/hottest100helper/static/js/787.b701888c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4986e647.css",
+    "static/js/main.9905e952.js"
+  ]
+}

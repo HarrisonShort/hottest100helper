@@ -1,6 +1,6 @@
 const authEndpoint = "https://accounts.spotify.com/authorize";
-const redirectUri = process.env.REACT_APP_NODE_ENV === 'production' ? 'https://harrisonshort.github.io/hottest100helper/' : "http://localhost:3000/";
-const clientId = process.env.REACT_APP_NODE_ENV === 'production' ? '19368744a9fa4f93aade08b455163471' : "e46e02da24384042b7a9d4a7cab689df";
+const redirectUri = process.env.NODE_ENV === 'production' ? 'https://harrisonshort.github.io/hottest100helper/' : "http://localhost:3000/";
+const clientId = process.env.NODE_ENV === 'production' ? '19368744a9fa4f93aade08b455163471' : "e46e02da24384042b7a9d4a7cab689df";
 
 const scopes = [
     'user-read-private',

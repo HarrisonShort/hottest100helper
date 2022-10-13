@@ -3,9 +3,9 @@ import { useTable, useSortBy } from 'react-table';
 import { useWindowSize } from '../../customHooks/useWindowSize';
 import './SpotifyDataTable.css';
 
-const up_arrow = process.env.REACT_APP_NODE_ENV === 'production' ? './images/up_arrow.png' : require('./images/up_arrow.png');
-const down_arrow = process.env.REACT_APP_NODE_ENV === 'production' ? './images/down_arrow.png' : require('./images/down_arrow.png');
-const both_arrow = process.env.REACT_APP_NODE_ENV === 'production' ? './images/both_arrow.png' : require('./images/both_arrow.png');
+const up_arrow = process.env.NODE_ENV === 'production' ? './images/up_arrow.png' : require('./images/up_arrow.png');
+const down_arrow = process.env.NODE_ENV === 'production' ? './images/down_arrow.png' : require('./images/down_arrow.png');
+const both_arrow = process.env.NODE_ENV === 'production' ? './images/both_arrow.png' : require('./images/both_arrow.png');
 
 const columnHideWidth = 500;
 

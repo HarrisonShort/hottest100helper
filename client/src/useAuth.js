@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const endpointURL = process.env.REACT_APP_NODE_ENV === 'production' ? "https://hottest100helper-server.azurewebsites.net" : "http://localhost:5000/spotify-login";
+const endpointURL = process.env.NODE_ENV === 'production' ? "https://hottest100helper-server.azurewebsites.net" : "http://localhost:5000/spotify-login";
 
 export default function useAuth(code) {
     const [accessToken, setAccessToken] = useState();

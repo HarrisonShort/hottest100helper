@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const endpointURL = process.env.REACT_APP_NODE_ENV === 'production' ? "https://hottest100helper-server.azurewebsites.net" : "http://localhost:5000/spotify-login";
+
 export default function useAuth(code) {
     const [accessToken, setAccessToken] = useState();
     const [refreshToken, setRefreshToken] = useState();
@@ -8,7 +10,7 @@ export default function useAuth(code) {
 
     useEffect(() => {
         axios
-            .post("http://localhost:5000/spotify-login", { code })
+            .post(endpointURL, { code })
             .then((res) => {
                 setAccessToken(res.data.accessToken);
                 setRefreshToken(res.data.refreshToken);
@@ -30,7 +32,7 @@ export default function useAuth(code) {
 
         const interval = setInterval(() => {
             axios
-                .post("http://localhost:5000/refresh", {
+                .post(endpointURL, {
                     refreshToken
                 })
                 .then((res) => {

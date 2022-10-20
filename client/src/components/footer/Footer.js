@@ -1,7 +1,7 @@
 import React from 'react';
 import './Footer.css';
 
-const kofiImage = process.env.REACT_APP_NODE_ENV === 'production' ? './images/kofi_button_dark.png' : require('./images/kofi_button_dark.png');
+const kofiImage = process.env.NODE_ENV === 'production' ? './images/kofi_button_dark.png' : require('./images/kofi_button_dark.png');
 
 export default function Footer() {
     return (

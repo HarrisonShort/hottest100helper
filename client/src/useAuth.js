@@ -43,7 +43,7 @@ export default function useAuth(code) {
                 })
                 .catch((error) => {
                     console.log(error);
-                    window.localStorage = redirectLocation;
+                    window.location = redirectLocation;
                 })
         }, (expiresIn - 60) * 1000); // Refresh the token in 59 minutes.
 

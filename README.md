@@ -29,7 +29,9 @@ Here are some potential improvements for the future:
 Please note that development on this project has ended and is unlikely to restart in future.
 
 ## Asana Board
-[Here](https://imgur.com/2SDGARw) is a screenshot of the final state of the Asana board. It was set up to track later steps of the project.
+Here is a screenshot of the final state of the Asana board. It was set up to track later steps of the project.
+
+![](https://i.imgur.com/2SDGARw.png)
 
 ## Special Thanks
 - This README file was written with the assistance of ChatGPT.
